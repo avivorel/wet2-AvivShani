@@ -20,6 +20,7 @@ public:
     bool hasGK;
     int playMatchEquation;
     Player* root_player;
+    int points;
 
 
     static int compareTeamId(const std::shared_ptr<Team> &a, const std::shared_ptr<Team> &b);
