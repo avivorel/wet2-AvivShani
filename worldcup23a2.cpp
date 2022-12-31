@@ -3,8 +3,8 @@
 
 world_cup_t::world_cup_t()
 {
-    team_tree_by_id = new AVLTree<std::shared_ptr<Team>>(Team::compareTeamId);
-    team_tree_by_ability = new AVLTree<std::shared_ptr<Team>>(Team::);
+    team_tree_by_id = new AVLTree<compareTeamId,std::shared_ptr<Team>>;
+    team_tree_by_ability = new AVLTree<compareTeamAbility,std::shared_ptr<Team>>;
     players_hashTable= new HashTable();
 }
 
@@ -68,7 +68,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId, const permutation_t
 
     try
     {
-        if(this->players_hashTable->Member(playerId) != nullptr) //if the player already exists
+        if(this->players_hashTable->Search(playerId) != nullptr) //if the player already exists
             return StatusType::FAILURE;
 
         //creating the player's shared_ptr
@@ -127,7 +127,7 @@ output_t<int> world_cup_t::get_player_cards(int playerId)
         return StatusType::INVALID_INPUT;
     }
     try {
-        std::shared_ptr<Player> player = this->players_hashTable->Member(playerId);
+        std::shared_ptr<Player> player = this->players_hashTable->Search(playerId);
         if (player == nullptr) {
             return StatusType::FAILURE;
         }

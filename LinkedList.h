@@ -51,6 +51,9 @@ public:
     Node<T>* getHead(){
         return this->head;
     }
+    Node<T>* getTail(){
+        return this->tail;
+    }
     void remove(Node<T> *node) {
         if (node == nullptr){
             return;

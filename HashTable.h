@@ -8,17 +8,17 @@
 
 #include "Player.h"
 #include "AVLTree.h"
+#include "LinkedList.h"
 #include <cstdlib>
 
 
 class HashTable{
 
     private:
-    int arr_size;
-    int keys_counter;
-    AVLTree<std::shared_ptr<Player>>** arr;
-
-    int HashFunction(int i) const;
+    int array_size;
+    int elements_counter;
+    LinkedList<std::shared_ptr<Player>>** arr;
+    int hashFunction(int i) const;
 
     public:
 
@@ -26,7 +26,7 @@ class HashTable{
 
     void Insert(const std::shared_ptr<Player>& p);
 
-    std::shared_ptr<Player> Member(int key);
+    std::shared_ptr<Player> Search(int key);
 
     void Delete(int key);
 

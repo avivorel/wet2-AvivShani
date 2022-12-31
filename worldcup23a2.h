@@ -17,7 +17,6 @@
 
 #include "wet2util.h"
 #include "Player.h"
-#include "UnionFind.h"
 #include "HashTable.h"
 #include "Team.h"
 
