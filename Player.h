@@ -20,7 +20,7 @@ public:
     Team* team;
     Player *parent;
     permutation_t spirit;
-    bool parent_legal_toTeam; // if his team deleted, the bool is false, and he can't join other team
+    bool teamDeleted; // if his team deleted, the bool is false, and he can't join other team
 
 
 
