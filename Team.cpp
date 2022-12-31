@@ -4,7 +4,7 @@
 #include <memory>
 
 Team::Team(int teamId):team_id(teamId),games_played(0),numberOfPlayers(0),numberOfGK(0),
-hasGK(false),playMatchEquation(0), root_player(nullptr), points(0){};
+hasGK(false), root_player(nullptr), points(0), team_spirit(permutation_t()), team_ability(0){};
 
 int Team::compareTeamId(const std::shared_ptr<Team> &a, const std::shared_ptr<Team> &b)
 {

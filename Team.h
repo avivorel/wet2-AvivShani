@@ -18,9 +18,12 @@ public:
     int numberOfPlayers;
     int numberOfGK;
     bool hasGK;
-    int playMatchEquation;
+    //int playMatchEquation;
     Player* root_player;
     int points;
+    permutation_t team_spirit;
+    int team_ability;
+    //bool is_teamactive;
 
 
     static int compareTeamId(const std::shared_ptr<Team> &a, const std::shared_ptr<Team> &b);
