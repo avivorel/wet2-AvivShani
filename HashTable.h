@@ -7,10 +7,9 @@
 #define DS2_HASHTABLE_H
 
 #include "Player.h"
-#include "AVLTree.h"
-#include "LinkedList.h"
 #include <cstdlib>
 
+#include "LinkedList.h"
 
 class HashTable{
 

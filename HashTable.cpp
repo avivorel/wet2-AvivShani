@@ -1,10 +1,10 @@
 #include "HashTable.h"
 
 int HashTable::hashFunction(int i) const {
-    return (i % this->arr_size);
+    return (i % this->array_size);
 }
 
-HashTable::HashTable():arr(nullptr), keys_counter(0), arr_size(5) {
+HashTable::HashTable():arr(nullptr), elements_counter(0), array_size(5) {
     this->arr = new LinkedList<std::shared_ptr<Player>>*[5];
     for (int i = 0; i < 5; ++i) {
         this->arr[i] = nullptr;
@@ -12,30 +12,30 @@ HashTable::HashTable():arr(nullptr), keys_counter(0), arr_size(5) {
 }
 
 std::shared_ptr<Player> HashTable::Search(int key) {
-    int index = HashFunction(key);
+    int index = hashFunction(key);
     if(this->arr[index] == nullptr)
     {
         return nullptr;
     }
     LinkedList<std::shared_ptr<Player>>* players_list = this->arr[index];
-    Node<std::shared_ptr<Player>> player_iterator = players_list->getHead();
-    while(player_iterator != nullptr and player_iterator.data->player_id != key){
-        players_iterator = player_iterator.next;
+    Node<std::shared_ptr<Player>> *player_iterator = players_list->getHead();
+    while(player_iterator != nullptr and player_iterator->data->player_id != key){
+        player_iterator = player_iterator->next;
     }
-    return player_iterator.data;
+    return player_iterator->data;
 }
 
 void HashTable::Delete(int key) {
-    int index = HashFunction(key);
+    int index = hashFunction(key);
     if(this->arr[index] == nullptr){
         return;
     }
     auto* players_list = arr[index];
-    Node<std::shared_ptr<Player>> player_iterator = players_list->getHead();
+    Node<std::shared_ptr<Player>> *player_iterator = players_list->getHead();
 
-    while(player_iterator != nullptr and player_iterator.data->player_id != key)
+    while(player_iterator != nullptr and player_iterator->data->player_id != key)
     {
-        players_iterator = player_iterator.next;
+        player_iterator = player_iterator->next;
     }
 
     if (player_iterator == nullptr)
@@ -48,8 +48,8 @@ void HashTable::Delete(int key) {
         delete players_list;
         arr[index]= nullptr;
     }
-    this->keys_counter--;
-    if ( this->keys_counter == (this->arr_size / 4))
+    this->elements_counter--;
+    if ( this->elements_counter == (this->array_size / 4))
     {
         this->resize();
     }
@@ -62,11 +62,11 @@ void HashTable::resize() {
 
     int new_size;
 
-    if (this->arr_size == this->keys_counter) {
-        new_size = 2 * this->arr_size;
+    if (this->array_size == this->elements_counter) {
+        new_size = 2 * this->array_size;
     }
-    if (this->keys_counter == (this->arr_size / 4)) {
-        new_size = (this->arr_size / 2);
+    if (this->elements_counter == (this->array_size / 4)) {
+        new_size = (this->array_size / 2);
     }
 
     auto** resized_arr = new LinkedList<std::shared_ptr<Player>>*[new_size] ;
@@ -74,7 +74,7 @@ void HashTable::resize() {
         resized_arr[k] = nullptr;
     }
 
-    for (int i = 0; i < this->arr_size; ++i) {
+    for (int i = 0; i < this->array_size; ++i) {
         if (arr[i] != nullptr)
         {
             auto* players_list = arr[i];
@@ -94,13 +94,13 @@ void HashTable::resize() {
     }
     delete[] this->arr;
     this->arr = resized_arr;
-    this->arr_size = new_size;
+    this->array_size = new_size;
 }
 
 
 void HashTable::Insert(const std::shared_ptr<Player>& p) {
-    int index = HashFunction(p->player_id);
-    this->keys_counter++;
+    int index = hashFunction(p->player_id);
+    this->elements_counter++;
 
     if (this->arr[index] == nullptr)
     {
@@ -108,14 +108,14 @@ void HashTable::Insert(const std::shared_ptr<Player>& p) {
     }
     auto* players_list =  this->arr[index];
     players_list->insert(p);
-    if(this->keys_counter == this->arr_size )
+    if(this->elements_counter == this->array_size )
     {
         this->resize();
     }
 }
 
 HashTable::~HashTable() {
-    for (int i = 0; i < this->arr_size; ++i) {
+    for (int i = 0; i < this->array_size; ++i) {
         delete arr[i];
     }
     delete[] arr;

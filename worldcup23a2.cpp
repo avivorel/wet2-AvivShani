@@ -14,7 +14,7 @@ world_cup_t::~world_cup_t()
 }
 
 StatusType world_cup_t::add_team(int teamId)
-{
+{/*
     if(teamId <= 0)
     {
         return StatusType::INVALID_INPUT;
@@ -28,11 +28,11 @@ StatusType world_cup_t::add_team(int teamId)
             return StatusType::FAILURE;
         }
         return StatusType::SUCCESS;
-    } catch (const std::bad_alloc &) {return  StatusType::ALLOCATION_ERROR;}
+    } catch (const std::bad_alloc &) {return  StatusType::ALLOCATION_ERROR;}*/
 }
 
 StatusType world_cup_t::remove_team(int teamId)
-{
+{/*
     if (teamId<=0)
     {
         return StatusType::INVALID_INPUT;
@@ -55,13 +55,13 @@ StatusType world_cup_t::remove_team(int teamId)
 
         return StatusType::SUCCESS;
     }
-    catch (const std::bad_alloc &) { return  StatusType::ALLOCATION_ERROR;}
+    catch (const std::bad_alloc &) { return  StatusType::ALLOCATION_ERROR;}*/
 }
 
 StatusType world_cup_t::add_player(int playerId, int teamId, const permutation_t &spirit, int gamesPlayed,
                                    int ability, int cards, bool goalKeeper)
 {
-
+/*
     if (teamId <= 0 || playerId <= 0 || (!(spirit.isvalid())) || gamesPlayed<0 || cards< 0){
         return StatusType::INVALID_INPUT;
     }
@@ -100,7 +100,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId, const permutation_t
        // numberOfPlayers += 1;
 
     } catch (const std::bad_alloc &) { return  StatusType::ALLOCATION_ERROR;}
-	return StatusType::SUCCESS;
+	return StatusType::SUCCESS;*/
 }
 
 output_t<int> world_cup_t::play_match(int teamId1, int teamId2)
@@ -138,7 +138,7 @@ output_t<int> world_cup_t::get_player_cards(int playerId)
 
 output_t<int> world_cup_t::get_team_points(int teamId)
 {
-	if (teamId <= 0){
+	/*if (teamId <= 0){
         return StatusType::INVALID_INPUT;
     }
     try
@@ -151,7 +151,7 @@ output_t<int> world_cup_t::get_team_points(int teamId)
         else{
             return output_t<int>(teamnode->GetValue()->points);
         }
-    } catch (const std::bad_alloc &) {return  StatusType::ALLOCATION_ERROR;}
+    } catch (const std::bad_alloc &) {return  StatusType::ALLOCATION_ERROR;}*/
 }
 
 output_t<int> world_cup_t::get_ith_pointless_ability(int i)

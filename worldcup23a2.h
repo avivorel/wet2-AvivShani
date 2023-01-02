@@ -24,10 +24,8 @@ class world_cup_t {
 private:
 
    // int numberOfPlayers;
-
-    AVLTree<std::shared_ptr<Team>> *team_tree_by_id;
-    AVLTree<std::shared_ptr<Team>> *team_tree_by_ability;
-
+    AVLTree<compareTeamId,std::shared_ptr<Team>> *team_tree_by_id;
+    AVLTree<compareTeamAbility,std::shared_ptr<Team>> *team_tree_by_ability;
    //HashTable Players
     HashTable* players_hashTable;
 

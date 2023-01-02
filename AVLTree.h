@@ -40,8 +40,6 @@ public:
 
 };
 
-
-
 template<class key, class value>
 AVLNode<key, value>::~AVLNode() {
     delete this->left_son;
