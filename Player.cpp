@@ -9,7 +9,7 @@ class Team{};
 
 Player::Player(int playerId, int teamId, const permutation_t& spirit, int gamesplayed, int ability, int cards, bool
 isGoalKeeper) :
-        player_id(playerId), team_id(teamId), games_played(gamesplayed),ability(ability), cards(cards),
+        player_id(playerId), games_played(gamesplayed),ability(ability), cards(cards),
         isGoalie(isGoalKeeper), team(nullptr), parent(nullptr), spirit(spirit),  teamDeleted(false){};
 
 

@@ -12,7 +12,6 @@ class Team;
 class Player {
 public:
     int player_id;
-    int team_id;
     int games_played;
     int ability;
     int cards;
