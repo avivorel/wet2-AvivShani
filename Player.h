@@ -19,7 +19,7 @@ public:
     std::shared_ptr<Team> team;
     std::shared_ptr<Player> parent;
     permutation_t fixed_spirit; // all except the root spirit
-    bool teamDeleted; // if his team deleted, the bool is false, and he can't join other team
+    bool teamDeleted; // if his team deleted, the bool is true, and he can't join other team
     // הקבוצה שקונים אותה מחסירים בשדה פיקס את מספר המשחקים של שקנתה
     // לכל שחקן הפיקס הוא המשספר משחקים שלו פחות השורש אלא אם הוא השורש זה המשחקים שלו בלבד
     // מעדכנים משחקים גם בשורש
@@ -38,6 +38,8 @@ public:
     //static int comparePlayerGoalsCardsId(const std::shared_ptr<Player> &a, const std::shared_ptr<Player> &b);
     void Union(std::shared_ptr<Team> &buying_team, std::shared_ptr<Team> &acquired_team);
     std::shared_ptr<Player> Find();
+
+    void setTeam(std::shared_ptr<Team> t);
 
 };
 #endif //SOLUTION_PLAYER_H

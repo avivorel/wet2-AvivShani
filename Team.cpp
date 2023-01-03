@@ -4,7 +4,8 @@
 #include <memory>
 
 Team::Team(int teamId): team_id(teamId), games_played(0), numberOfPlayers(0), numberOfGK(0),
-                        hasGK(false), root_player(nullptr), points(0), teamSpirit_without_root(permutation_t::neutral()), team_ability(0){};
+                        hasGK(false), root_player(), points(0), teamSpirit_without_root(permutation_t::neutral()),
+                        rootSpirit(permutation_t::neutral()),team_ability(0){};
 
 
 

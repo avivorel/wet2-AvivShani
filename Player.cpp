@@ -22,30 +22,30 @@ int Player::comparePlayerId(const std::shared_ptr<Player> &player1, const std::s
 void Player::Union(std::shared_ptr<Team> &buying_team ,std::shared_ptr<Team> &acquired_team)
 {
     permutation_t a_max = buying_team->teamSpirit_without_root;
-    permutation_t a_old= buying_team->root_player->fixed_spirit;
-    permutation_t b_old= acquired_team->root_player->fixed_spirit;
+    permutation_t a_old= buying_team->root_player.lock()->fixed_spirit;
+    permutation_t b_old= acquired_team->root_player.lock()->fixed_spirit;
 
     // check which team is bigger
     if (buying_team->numberOfPlayers >= acquired_team->numberOfPlayers)
     {
         // in this case we take the acuired_team's root and link it to this root.
 
-        acquired_team->root_player->fixed_spirit=  a_max * b_old;
+        acquired_team->root_player.lock()->fixed_spirit=  a_max * b_old;
 
-        acquired_team->root_player->parent = buying_team->root_player;
+        acquired_team->root_player.lock()->parent = buying_team->root_player.lock();
         buying_team->numberOfPlayers += acquired_team->numberOfPlayers;
-        acquired_team->root_player->games_played -= buying_team->games_played;
+        acquired_team->root_player.lock()->games_played -= buying_team->games_played;
         // we need go update all of the neccesary fields. (games played, permutations, etc...)
     }
     else
     { // in this case, the acquired team is bigger, so we have to change the acquired team details to the buying team's details
-        acquired_team->root_player->fixed_spirit=  a_old * a_max * b_old;
-        buying_team->root_player->fixed_spirit=  acquired_team->root_player->fixed_spirit.inv() * a_old;
+        acquired_team->root_player.lock()->fixed_spirit=  a_old * a_max * b_old;
+        buying_team->root_player.lock()->fixed_spirit=  acquired_team->root_player.lock()->fixed_spirit.inv() * a_old;
 
-        buying_team->root_player->parent = acquired_team->root_player;
+        buying_team->root_player.lock()->parent = acquired_team->root_player.lock();
         acquired_team->numberOfPlayers += buying_team->numberOfPlayers;
-        acquired_team->root_player->team = buying_team;
-        buying_team->root_player->games_played -= acquired_team->games_played;
+        acquired_team->root_player.lock()->team = buying_team;
+        buying_team->root_player.lock()->games_played -= acquired_team->games_played;
     }
 
 }
@@ -94,4 +94,9 @@ std::shared_ptr<Player> Player::Find() {
     }
     this->parent = everyones_parent;
     return iterator;
+}
+
+void Player::setTeam(std::shared_ptr<Team> t)
+{
+    this->team=t;
 }

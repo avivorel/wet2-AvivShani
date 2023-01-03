@@ -18,9 +18,11 @@ public:
     int numberOfPlayers;
     int numberOfGK;
     bool hasGK;
-    std::shared_ptr<Player> root_player;
+    std::weak_ptr<Player> root_player;
     int points;
     permutation_t teamSpirit_without_root;
+    permutation_t rootSpirit;
+
     int team_ability;
 
 
@@ -32,7 +34,7 @@ public:
 
 class compareTeamId{
 public:
-    int operator()(const std::shared_ptr<Team>& a, const std::shared_ptr<Team> b)
+    int operator()(const std::shared_ptr<Team>& a, const std::shared_ptr<Team>& b)
     {
         if(a->team_id > b->team_id) return 1;
         if(a->team_id < b->team_id) return -1;

@@ -368,13 +368,13 @@ AVLNode<key, value>* AVLTree<key,value>::removeHelper(AVLNode<key, value>* node,
     if (key()(data, node->getValue()) == (-1))
     {
         node->addNumOfNodesBelow(-1);
-        node->getLeft() = removeHelper(node->getLeft(), data);
+        node->setLeft(removeHelper(node->getLeft(), data)) ;
     }
 
     if(key()(data, node->getValue()) == 1)
     {
         node->addNumOfNodesBelow(-1);
-        node->getRight() = removeHelper(node->getRight(), data);
+        node->setRight(removeHelper(node->getRight(), data));
     }
 
     if (key()(data, node->getValue()) == 0)
@@ -400,7 +400,7 @@ AVLNode<key, value>* AVLTree<key,value>::removeHelper(AVLNode<key, value>* node,
                     temp= node->getRight();
                 }
 
-                node->getValue() = temp->getValue();
+                node->setValue(temp->getValue());
 
             }
 
@@ -410,8 +410,8 @@ AVLNode<key, value>* AVLTree<key,value>::removeHelper(AVLNode<key, value>* node,
         else
         {
             AVLNode<key, value>* temp = findMin(node->getRight());
-            node->getValue() = temp->getValue();
-            node->getRight() = removeHelper(node->getRight(), temp->getValue());
+            node->setValue(temp->getValue());
+            node->setRight(removeHelper(node->getRight(), temp->getValue()));
         }
     }
 
