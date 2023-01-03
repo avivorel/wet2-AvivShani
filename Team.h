@@ -18,7 +18,7 @@ public:
     int numberOfPlayers;
     int numberOfGK;
     bool hasGK;
-    Player* root_player;
+    std::shared_ptr<Player> root_player;
     int points;
     permutation_t team_spirit;
     int team_ability;
@@ -27,7 +27,6 @@ public:
     static int compareTeamId(const std::shared_ptr<Team> &a, const std::shared_ptr<Team> &b);
     explicit Team(int teamid);
     void add_player(const std::shared_ptr<Player>& playerToAdd);
-
 
 };
 

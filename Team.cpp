@@ -24,3 +24,4 @@ void Team::add_player(const std::shared_ptr<Player>& playerToAdd)
         }
 
 }
+
