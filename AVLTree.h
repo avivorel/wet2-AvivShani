@@ -121,22 +121,23 @@ int AVLTree<key,value>:: nodeHeight( AVLNode<key, value> *node) const
 template<class key, class value>
 int AVLTree<key,value>:: getNodeBF ( AVLNode<key, value> *node) const
 {
-    if (node->getRight() != nullptr && node->getLeft() != nullptr)
-    {
-        return node->getLeft() - node->getRight();
+    int leftheight;
+    int rightheight;
+    if (node->getLeft() == nullptr){
+        leftheight = -1;
     }
-
-    if (node->getRight() != nullptr)
+    else
     {
-        return (-1) - node->getRight();
+        leftheight = node->getLeft()->getHeight();
     }
-
-    if (node->getLeft() != nullptr)
-    {
-        return node->getLeft() - (-1);
+    if(node->getRight() == nullptr){
+        rightheight = -1;
     }
+    else{
+        rightheight = node->getRight()->getHeight();
+    }
+    return leftheight - rightheight;
 
-    return 0;
 }
 
 template<class key, class value>
@@ -148,8 +149,8 @@ void AVLTree<key,value>:: rotateLeft (AVLNode<key, value>* node)
     node->setNumOfNodesBelow(node->getLeft()->nodesBelow() + temp2->nodesBelow() + 1);
     temp1->setNumOfNodesBelow(temp1->getRight()->nodesBelow() + node->nodesBelow() + 1);
 
-    temp1->getLeft() = node;
-    node->getRight() = temp2;
+    temp1->setLeft(node);
+    node->setRight(temp2);
 
     if (nodeHeight(node->getLeft()) > nodeHeight(node->getRight()))
     {
@@ -158,7 +159,7 @@ void AVLTree<key,value>:: rotateLeft (AVLNode<key, value>* node)
 
     else
     {
-        node->setHeight(nodeHeight(node->getRight) + 1);
+        node->setHeight(nodeHeight(node->getRight()) + 1);
     }
 
     if (nodeHeight(temp1->getLeft()) > nodeHeight(temp1->getRight()))
@@ -181,8 +182,8 @@ void AVLTree<key,value>:: rotateRight (AVLNode<key, value>* node)
     node->setNumOfNodesBelow(temp2->nodesBelow() + node->getRight()->nodesBelow() + 1);
     temp1->setNumOfNodesBelow(temp1->getLeft()->nodesBelow() + node->nodesBelow() + 1);
 
-    temp1->getRight() = node;
-    node->getLeft() = temp2;
+    temp1->setRight(node);
+    node->setLeft(temp2);
 
     if (nodeHeight(node->getLeft()) > nodeHeight(node->getRight()))
     {
@@ -191,7 +192,7 @@ void AVLTree<key,value>:: rotateRight (AVLNode<key, value>* node)
 
     else
     {
-        node->setHeight(nodeHeight(node->getRight) + 1);
+        node->setHeight(nodeHeight(node->getRight()) + 1);
     }
 
     if (nodeHeight(temp1->getLeft()) > nodeHeight(temp1->getRight()))
