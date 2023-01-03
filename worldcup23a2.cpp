@@ -14,21 +14,19 @@ world_cup_t::~world_cup_t()
 }
 
 StatusType world_cup_t::add_team(int teamId)
-{/*
-    if(teamId <= 0)
-    {
+{
+    if (teamId <= 0){
         return StatusType::INVALID_INPUT;
     }
-    try
-    {
-        std::shared_ptr<Team> newTeam(new Team(teamId));
-
-        if(!this->team_tree_by_id->Insert(newTeam) ||!this->team_tree_by_ability->Insert(newTeam))
-        {
-            return StatusType::FAILURE;
-        }
-        return StatusType::SUCCESS;
-    } catch (const std::bad_alloc &) {return  StatusType::ALLOCATION_ERROR;}*/
+    std::shared_ptr<Team> teamfinder(new Team(teamId));
+    auto* foundTeam = this->team_tree_by_id->find(teamfinder);
+    if (foundTeam != nullptr){
+        return StatusType::FAILURE;
+    }
+    try{
+        this->team_tree_by_id->insert(teamfinder);
+    }
+    catch (const std::bad_alloc &) { return  StatusType::ALLOCATION_ERROR;}
 }
 
 StatusType world_cup_t::remove_team(int teamId)

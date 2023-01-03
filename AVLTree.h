@@ -210,27 +210,27 @@ template<class key, class value>
 void AVLTree<key,value>::rotateByNeeded(AVLNode<key, value> *node)
 {
 
-    if (node->getNodeBF() == -2 && (node->getRight())->getNodeBF() <= 0)
+    if (getNodeBF(node) == -2 && getNodeBF(node->getRight()) <= 0)
     {
         rotateLeft(node);
         return;
     }
 
-    if (node->getNodeBF() == -2 && (node->getRight())->getNodeBF() == 1)
+    if (getNodeBF(node)  == -2 && getNodeBF(node->getRight()) == 1)
     {
         rotateRight(node->getRight());
         rotateLeft(node);
         return;
     }
 
-    if (node->getNodeBF() == 2 && (node->getLeft())->getNodeBF() == -1)
+    if (getNodeBF(node)  == 2 && getNodeBF(node->getLeft()) == -1)
     {
         rotateLeft(node->getLeft());
         rotateRight(node);
         return;
     }
 
-    if (node->getNodeBF() == 2 && (node->getLeft())->getNodeBF() >= 0)
+    if (getNodeBF(node) == 2 && getNodeBF(node->getLeft()) >= 0)
     {
         rotateRight(node);
         return;
@@ -268,7 +268,7 @@ bool AVLTree<key,value>::insert(const value &data)
 template<class key, class value>
 bool AVLTree<key, value>::insertHelper(AVLNode<key, value> *node, const value &data) {
 
-    if (key(node->getValue(), data) != 1)
+    if (key()(node->getValue(), data) != 1)
     {
         if (node->getRight() != nullptr)
         {
@@ -326,12 +326,12 @@ AVLNode<key, value> *AVLTree<key,value>::findHelper(AVLNode<key, value>* node, c
         return nullptr;
     }
 
-    if (key(data, node->getValue()) == 1)
+    if (key()(data, node->getValue()) == 1)
     {
         return findHelper(node->getRight(), data);
     }
 
-    if (key(data, node->getValue()) == 0)
+    if (key()(data, node->getValue()) == 0)
     {
         return node;
     }
@@ -364,19 +364,19 @@ AVLNode<key, value>* AVLTree<key,value>::removeHelper(AVLNode<key, value>* node,
     if (node == nullptr)
         return node;
 
-    if (key(data, node->getValue()) == (-1))
+    if (key()(data, node->getValue()) == (-1))
     {
         node->addNumOfNodesBelow(-1);
         node->getLeft() = removeHelper(node->getLeft(), data);
     }
 
-    if(key(data, node->getValue()) == 1)
+    if(key()(data, node->getValue()) == 1)
     {
         node->addNumOfNodesBelow(-1);
         node->getRight() = removeHelper(node->getRight(), data);
     }
 
-    if (key(data, node->getValue()) == 0)
+    if (key()(data, node->getValue()) == 0)
     {
         if((node->getLeft() == nullptr) || (node->getRight() == nullptr) )
         {

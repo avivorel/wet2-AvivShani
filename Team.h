@@ -31,7 +31,8 @@ public:
 };
 
 class compareTeamId{
-    int operator()(const std::shared_ptr<Team> &a, const std::shared_ptr<Team> &b)
+public:
+    int operator()(const std::shared_ptr<Team>& a, const std::shared_ptr<Team> b)
     {
         if(a->team_id > b->team_id) return 1;
         if(a->team_id < b->team_id) return -1;
@@ -39,6 +40,7 @@ class compareTeamId{
     }
 };
 class compareTeamAbility{
+public:
     int operator()(const std::shared_ptr<Team> &a, const std::shared_ptr<Team> &b){
         if (a->team_ability == b->team_ability){
             if (a->team_id == b->team_id){
