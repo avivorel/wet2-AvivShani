@@ -20,7 +20,7 @@ public:
     bool hasGK;
     std::shared_ptr<Player> root_player;
     int points;
-    permutation_t team_spirit;
+    permutation_t teamSpirit_without_root;
     int team_ability;
 
 

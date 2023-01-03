@@ -40,7 +40,7 @@ void HashTable::Delete(int key) {
 
     if (player_iterator == nullptr)
     {
-     return;
+        return;
     }
     players_list->remove(player_iterator);
     if (players_list->getHead() == nullptr)
@@ -120,4 +120,3 @@ HashTable::~HashTable() {
     }
     delete[] arr;
 }
-

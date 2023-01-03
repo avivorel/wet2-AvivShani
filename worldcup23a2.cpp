@@ -105,7 +105,9 @@ StatusType world_cup_t::add_player(int playerId, int teamId, const permutation_t
 
 output_t<int> world_cup_t::play_match(int teamId1, int teamId2)
 {
-	// TODO: Your code goes here
+    // מעדכנים משחקים גם בשורש
+
+    // TODO: Your code goes here
 	return StatusType::SUCCESS;
 }
 

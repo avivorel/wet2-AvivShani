@@ -3,8 +3,8 @@
 #include "Team.h"
 #include <memory>
 
-Team::Team(int teamId):team_id(teamId),games_played(0),numberOfPlayers(0),numberOfGK(0),
-hasGK(false), root_player(nullptr), points(0), team_spirit(permutation_t::neutral()), team_ability(0){};
+Team::Team(int teamId): team_id(teamId), games_played(0), numberOfPlayers(0), numberOfGK(0),
+                        hasGK(false), root_player(nullptr), points(0), teamSpirit_without_root(permutation_t::neutral()), team_ability(0){};
 
 int Team::compareTeamId(const std::shared_ptr<Team> &a, const std::shared_ptr<Team> &b)
 {
