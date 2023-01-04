@@ -170,8 +170,6 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2)
 
     }
     catch (const std::bad_alloc &) { return  StatusType::ALLOCATION_ERROR;}
-    // TODO: Your code goes here
-	return StatusType::SUCCESS;
 }
 
 output_t<int> world_cup_t::num_played_games_for_player(int playerId)
@@ -182,8 +180,24 @@ output_t<int> world_cup_t::num_played_games_for_player(int playerId)
 
 StatusType world_cup_t::add_player_cards(int playerId, int cards)
 {
-	// TODO: Your code goes here
-	return StatusType::SUCCESS;
+	if (playerId <= 0 or cards < 0){
+        return StatusType::INVALID_INPUT;
+    }
+
+    try {
+        if (this->players_hashTable->Search(playerId) == nullptr) {
+            return StatusType::FAILURE;
+        }
+
+        std::shared_ptr<Player> player = this->players_hashTable->Search(playerId);
+        std::shared_ptr<Player> players_root = player->Find();
+        if (players_root->teamDeleted) {
+            return StatusType::FAILURE;
+        }
+
+        player->cards += cards;
+    } catch (const std::bad_alloc &) {return  StatusType::ALLOCATION_ERROR;}
+    return StatusType::SUCCESS;
 }
 
 output_t<int> world_cup_t::get_player_cards(int playerId)
@@ -196,27 +210,27 @@ output_t<int> world_cup_t::get_player_cards(int playerId)
         if (player == nullptr) {
             return StatusType::FAILURE;
         }
-        return output_t<int>(player->cards);
+        return {player->cards};
     }
     catch (const std::bad_alloc &) {return  StatusType::ALLOCATION_ERROR;}
 }
 
 output_t<int> world_cup_t::get_team_points(int teamId)
 {
-	/*if (teamId <= 0){
+	if (teamId <= 0){
         return StatusType::INVALID_INPUT;
     }
     try
     {
         std::shared_ptr<Team> newTeam(new Team(teamId));
-        auto* teamnode = this->team_tree_by_id->Find(newTeam);
+        auto* teamnode = this->team_tree_by_id->find(newTeam);
         if (teamnode == nullptr){
             return StatusType::FAILURE;
         }
         else{
-            return output_t<int>(teamnode->GetValue()->points);
+            return {teamnode->getValue()->points};
         }
-    } catch (const std::bad_alloc &) {return  StatusType::ALLOCATION_ERROR;}*/
+    } catch (const std::bad_alloc &) {return  StatusType::ALLOCATION_ERROR;}
 }
 
 output_t<int> world_cup_t::get_ith_pointless_ability(int i)
