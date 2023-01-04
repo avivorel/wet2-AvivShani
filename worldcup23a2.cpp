@@ -95,28 +95,81 @@ StatusType world_cup_t::add_player(int playerId, int teamId, const permutation_t
 
         if (foundteam->getValue()->numberOfPlayers == 1)
         {
-            player.get()->team=foundteam->getValue();
-            player.get()->parent= nullptr;
-
+            player->team=foundteam->getValue();
+            player->parent= nullptr;
             foundteam->getValue()->rootSpirit = spirit; /// maybe not needed
         }
         else
         {
             /// permutation !!!!
-            player.get()->parent= foundteam->getValue()->root_player.lock();
+            player->parent= foundteam->getValue()->root_player.lock();
             foundteam->getValue()->teamSpirit_without_root = foundteam->getValue()->teamSpirit_without_root * spirit;
-            player.get()->fixed_spirit = foundteam->getValue()->teamSpirit_without_root;
+            player->fixed_spirit = foundteam->getValue()->teamSpirit_without_root;
         }
-
 
     } catch (const std::bad_alloc &) { return  StatusType::ALLOCATION_ERROR;}
 	return StatusType::SUCCESS;
 }
 
 output_t<int> world_cup_t::play_match(int teamId1, int teamId2)
-{
+{ // אוסיף אחד למשחקים גם בשורש, שכחתי למה אבל אעשה את זה
     // מעדכנים משחקים גם בשורש
+    if (teamId2 <= 0  or teamId1 <= 0 or teamId2 == teamId1){
+        return StatusType::INVALID_INPUT;
+    }
+    try {
+        std::shared_ptr<Team> team1(new Team(teamId1));
+        std::shared_ptr<Team> team2(new Team(teamId2));
+        auto *found_team_1 = this->team_tree_by_id->find(team1);
+        auto *found_team_2 = this->team_tree_by_id->find(team2);
+        if (found_team_1 == nullptr or found_team_2 == nullptr) {
+            return StatusType::FAILURE;
+        }
 
+        std::shared_ptr<Team> real_team_1 = found_team_1->getValue();
+        std::shared_ptr<Team> real_team_2 = found_team_2->getValue();
+        if (!real_team_1->hasGK or !real_team_2->hasGK) {
+            return StatusType::FAILURE;
+        }
+
+        // actual match playing
+        int team1_ability = real_team_1->points + real_team_1->team_ability;
+        int team2_ability = real_team_2->points + real_team_2->team_ability;
+        real_team_1->games_played += 1; // adding 1 to the games count of the team and root.
+        real_team_1->root_player.lock()->games_played += 1;
+        real_team_2->games_played += 1;
+        real_team_2->root_player.lock()->games_played += 1;
+        if (team1_ability > team2_ability){
+            real_team_1->points += 3;
+            return {1};
+        }
+
+        else if ( team2_ability > team1_ability){
+            real_team_2->points += 3;
+            return {3};
+        }
+
+        else{
+            permutation_t team1_spirit =real_team_1->rootSpirit * real_team_1->teamSpirit_without_root;
+            permutation_t team2_spirit =real_team_2->rootSpirit * real_team_2->teamSpirit_without_root;
+            if (team1_spirit.strength() > team2_spirit.strength()){
+                real_team_1->points += 3;
+                return {2};
+            }
+
+            else if (team1_spirit.strength() < team2_spirit.strength()){
+                real_team_2->points += 3;
+                return {4};
+            }
+            else{
+                real_team_1->points += 1;
+                real_team_2->points += 1;
+                return {0};
+            }
+        }
+
+    }
+    catch (const std::bad_alloc &) { return  StatusType::ALLOCATION_ERROR;}
     // TODO: Your code goes here
 	return StatusType::SUCCESS;
 }

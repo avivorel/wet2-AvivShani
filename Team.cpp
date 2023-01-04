@@ -17,6 +17,6 @@ void Team::add_player(const std::shared_ptr<Player>& playerToAdd)
             this->hasGK = true;
             this->numberOfGK += 1;
         }
-
+    team_ability += playerToAdd->ability;
 }
 
