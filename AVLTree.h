@@ -5,14 +5,14 @@ class AVLNode {
     AVLNode<key, value> *left_son;
     AVLNode<key, value> *right_son;
     int height;
-    int numOfNodesBelow;
+    int numOfNodesBelow_include;
 
 public:
 
-    AVLNode() : data(nullptr), left_son(nullptr), right_son(nullptr), height(0), numOfNodesBelow(1) {}
+    AVLNode() : data(nullptr), left_son(nullptr), right_son(nullptr), height(0), numOfNodesBelow_include(1) {}
 
     explicit AVLNode(const value &data) : data(data), left_son(nullptr), right_son(nullptr), height(0)
-    , numOfNodesBelow(1) {}
+    , numOfNodesBelow_include(1) {}
 
     ~AVLNode();
 
@@ -32,11 +32,11 @@ public:
 
     int getHeight() const { return this->height; }
 
-    int nodesBelow() const { return this->numOfNodesBelow; }
+    int nodesBelow() const { return this->numOfNodesBelow_include; }
 
-    void addNumOfNodesBelow(int n)  { this->numOfNodesBelow+= n ; }
+    void addNumOfNodesBelow(int n)  { this->numOfNodesBelow_include+= n ; }
 
-    void setNumOfNodesBelow(int n)  { this->numOfNodesBelow= n ; }
+    void setNumOfNodesBelow(int n)  { this->numOfNodesBelow_include= n ; }
 
 };
 
@@ -84,6 +84,9 @@ public:
     AVLNode<key, value>* findMax(AVLNode<key, value>* root) const;
 
     AVLNode<key, value>* findMin(AVLNode<key, value>* root) const;
+
+    AVLNode<key, value>* findIndex(AVLNode<key, value>* node, int index) const;
+
 
 };
 
@@ -457,5 +460,23 @@ AVLNode<key, value>* AVLTree<key,value>:: findMin(AVLNode<key, value>* root) con
     }
 
     return temp;
+}
+
+template<class key, class value>
+AVLNode<key, value> *AVLTree<key, value>::findIndex(AVLNode<key, value> *node, int index) const
+{
+    if (node->getLeft()->nodesBelow() == index-1)
+    {
+        return node;
+    }
+
+    if (node->getLeft()->nodesBelow() > index-1)
+    {
+        findIndex(node->getLeft(), index);
+    }
+    if (node->getLeft()->nodesBelow() < index-1)
+    {
+        findIndex(node->getRight(), (index - node->getLeft()->nodesBelow() -1));
+    }
 }
 

@@ -6,6 +6,7 @@ world_cup_t::world_cup_t()
     team_tree_by_id = new AVLTree<compareTeamId,std::shared_ptr<Team>>;
     team_tree_by_ability = new AVLTree<compareTeamAbility,std::shared_ptr<Team>>;
     players_hashTable= new HashTable();
+    numofTeams=0;
 }
 
 world_cup_t::~world_cup_t()
@@ -29,6 +30,7 @@ StatusType world_cup_t::add_team(int teamId)
 
         this->team_tree_by_id->insert(teamfinder);
         this->team_tree_by_ability->insert(teamfinder);
+        numofTeams++;
 
     }
     catch (const std::bad_alloc &) { return  StatusType::ALLOCATION_ERROR;}
@@ -56,6 +58,7 @@ StatusType world_cup_t::remove_team(int teamId)
 
         this->team_tree_by_id->remove(team_toRemove->getValue());
         this->team_tree_by_ability->remove(team_toRemove->getValue());
+        numofTeams--;
     }
     catch (const std::bad_alloc &) { return  StatusType::ALLOCATION_ERROR;}
 
@@ -174,8 +177,24 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2)
 
 output_t<int> world_cup_t::num_played_games_for_player(int playerId)
 {
-	// TODO: Your code goes here
-	return 22;
+    if (playerId <= 0)
+    {
+        return StatusType::INVALID_INPUT;
+    }
+
+    try {
+        if (this->players_hashTable->Search(playerId) == nullptr)
+        {
+            return StatusType::FAILURE;
+        }
+
+        std::shared_ptr<Player> player = this->players_hashTable->Search(playerId);
+        std::shared_ptr<Player> players_root = player->Find();
+
+        return {player->games_played+ players_root->games_played};
+
+    } catch (const std::bad_alloc &) {return  StatusType::ALLOCATION_ERROR;}
+
 }
 
 StatusType world_cup_t::add_player_cards(int playerId, int cards)
@@ -185,7 +204,8 @@ StatusType world_cup_t::add_player_cards(int playerId, int cards)
     }
 
     try {
-        if (this->players_hashTable->Search(playerId) == nullptr) {
+        if (this->players_hashTable->Search(playerId) == nullptr)
+        {
             return StatusType::FAILURE;
         }
 
@@ -235,18 +255,75 @@ output_t<int> world_cup_t::get_team_points(int teamId)
 
 output_t<int> world_cup_t::get_ith_pointless_ability(int i)
 {
-	// TODO: Your code goes here
-	return 12345;
+
+    if (numofTeams == 0 || i<0 || i>= numofTeams )
+    {
+        return StatusType::FAILURE;
+    }
+    try {
+        auto *newTeam = team_tree_by_ability->findIndex(team_tree_by_ability->getRoot(), i + 1);
+        return {newTeam->getValue()->team_id};
+    } catch (const std::bad_alloc &){return  StatusType::ALLOCATION_ERROR;}
+
 }
 
 output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
 {
-	// TODO: Your code goes here
-	return permutation_t();
+    if (playerId <= 0)
+    {
+        return StatusType::INVALID_INPUT;
+    }
+
+    try {
+        if (this->players_hashTable->Search(playerId) == nullptr)
+        {
+            return StatusType::FAILURE;
+        }
+
+        std::shared_ptr<Player> player = this->players_hashTable->Search(playerId);
+        std::shared_ptr<Player> players_root = player->Find();
+
+        if (players_root->teamDeleted)
+        {
+            return StatusType::FAILURE;
+        }
+
+
+        return { players_root->fixed_spirit * player->fixed_spirit}; /// how to return
+
+    } catch (const std::bad_alloc &){return  StatusType::ALLOCATION_ERROR;}
+	//return permutation_t();
 }
 
 StatusType world_cup_t::buy_team(int teamId1, int teamId2)
 {
-	// TODO: Your code goes here
+
+    /// team1= buyer , team2= bought
+
+    if (teamId1 < 0 || teamId2 <0 || teamId1 == teamId2)
+    {
+        return StatusType::INVALID_INPUT;
+    }
+
+    try {
+        std::shared_ptr<Team> team1(new Team(teamId1));
+        std::shared_ptr<Team> team2(new Team(teamId2));
+        auto *found_team_1 = this->team_tree_by_id->find(team1);
+        auto *found_team_2 = this->team_tree_by_id->find(team2);
+
+        if (found_team_1 == nullptr || found_team_2 == nullptr)
+        {
+            return StatusType::FAILURE;
+        }
+
+        team1->root_player.lock()->Union(team1, team2);
+        team1->points += team2->points;
+
+        this->team_tree_by_id->remove(team2);
+        this->team_tree_by_ability->remove(team2);
+        numofTeams--;
+
+    } catch (const std::bad_alloc &) { return  StatusType::ALLOCATION_ERROR;}
+
 	return StatusType::SUCCESS;
 }

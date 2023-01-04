@@ -28,7 +28,7 @@ private:
     AVLTree<compareTeamAbility,std::shared_ptr<Team>> *team_tree_by_ability;
    //HashTable Players
     HashTable* players_hashTable;
-
+    int numofTeams;
 	
 public:
 	// <DO-NOT-MODIFY> {
