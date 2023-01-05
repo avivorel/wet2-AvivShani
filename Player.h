@@ -37,6 +37,8 @@ public:
 
     //static int comparePlayerGoalsCardsId(const std::shared_ptr<Player> &a, const std::shared_ptr<Player> &b);
     void Union(std::shared_ptr<Team> &buying_team, std::shared_ptr<Team> &acquired_team);
+    void UnionBuyingEmpty(std::shared_ptr<Team> &buying_team, std::shared_ptr<Team> &acquired_team);
+    void UnionAcquiredEmpty(std::shared_ptr<Team> &buying_team, std::shared_ptr<Team> &acquired_team);
     std::shared_ptr<Player> Find();
 
     void setTeam(std::shared_ptr<Team> t);

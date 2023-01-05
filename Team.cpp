@@ -11,6 +11,9 @@ Team::Team(int teamId): team_id(teamId), games_played(0), numberOfPlayers(0), nu
 
 void Team::add_player(const std::shared_ptr<Player>& playerToAdd)
 {
+    if (this->numberOfPlayers == 0){
+        this->root_player = playerToAdd;
+    }
         this->numberOfPlayers = this->numberOfPlayers + 1;
         if (playerToAdd->isGoalie)
         {

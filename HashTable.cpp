@@ -22,6 +22,9 @@ std::shared_ptr<Player> HashTable::Search(int key) {
     while(player_iterator != nullptr and player_iterator->data->player_id != key){
         player_iterator = player_iterator->next;
     }
+    if(player_iterator == nullptr){
+        return nullptr;
+    }
     return player_iterator->data;
 }
 

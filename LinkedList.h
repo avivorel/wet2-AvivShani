@@ -14,8 +14,8 @@ public:
     ~Node() = default;
     Node(T data){
         this->data = data;
-        next = NULL;
-        prev = NULL;
+        next = nullptr;
+        prev = nullptr;
         score = 0;
     }
     void setData(T newdata){
@@ -33,13 +33,13 @@ private:
     Node<T> *tail;
 public:
     LinkedList() {
-        head = NULL;
-        tail = NULL;
+        head = nullptr;
+        tail = nullptr;
     }
     ~LinkedList() = default;
     void insert(T data) {
         Node<T> *newNode = new Node<T>(data);
-        if (head == NULL) {
+        if (head == nullptr) {
             head = newNode;
             tail = newNode;
         } else {
@@ -74,13 +74,13 @@ public:
     }
     void deleteList() {
         Node<T> *current = head;
-        while (current != NULL) {
+        while (current != nullptr) {
             Node<T> *next = current->next;
             delete current;
             current = next;
         }
-        head = NULL;
-        tail = NULL;
+        head = nullptr;
+        tail = nullptr;
     }
 };
 

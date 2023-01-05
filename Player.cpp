@@ -22,16 +22,19 @@ int Player::comparePlayerId(const std::shared_ptr<Player> &player1, const std::s
 void Player::Union(std::shared_ptr<Team> &buying_team ,std::shared_ptr<Team> &acquired_team)
 {
     permutation_t a_max = buying_team->teamSpirit_without_root;
-    permutation_t a_old= buying_team->root_player.lock()->fixed_spirit;
-    permutation_t b_old= acquired_team->root_player.lock()->fixed_spirit;
-
+    permutation_t a_old = permutation_t::neutral();
+    permutation_t b_old= permutation_t::neutral();
+    if (buying_team->root_player.lock() != nullptr){
+        a_old = buying_team->root_player.lock()->fixed_spirit;
+    }
+    if (acquired_team->root_player.lock()== nullptr){
+        b_old= acquired_team->root_player.lock()->fixed_spirit;
+    }
     // check which team is bigger
     if (buying_team->numberOfPlayers >= acquired_team->numberOfPlayers)
     {
         // in this case we take the acuired_team's root and link it to this root.
-
         acquired_team->root_player.lock()->fixed_spirit=  a_max * b_old;
-
         acquired_team->root_player.lock()->parent = buying_team->root_player.lock();
         buying_team->numberOfPlayers += acquired_team->numberOfPlayers;
         acquired_team->root_player.lock()->games_played -= buying_team->games_played;
@@ -39,9 +42,8 @@ void Player::Union(std::shared_ptr<Team> &buying_team ,std::shared_ptr<Team> &ac
     }
     else
     { // in this case, the acquired team is bigger, so we have to change the acquired team details to the buying team's details
-        acquired_team->root_player.lock()->fixed_spirit=  a_old * a_max * b_old;
-        buying_team->root_player.lock()->fixed_spirit=  acquired_team->root_player.lock()->fixed_spirit.inv() * a_old;
-
+        acquired_team->root_player.lock()->fixed_spirit =  a_old * a_max * b_old;
+        buying_team->root_player.lock()->fixed_spirit =  acquired_team->root_player.lock()->fixed_spirit.inv() * a_old;
         buying_team->root_player.lock()->parent = acquired_team->root_player.lock();
         acquired_team->numberOfPlayers += buying_team->numberOfPlayers;
         acquired_team->root_player.lock()->team = buying_team;
@@ -98,5 +100,21 @@ std::shared_ptr<Player> Player::Find() {
 
 void Player::setTeam(std::shared_ptr<Team> t)
 {
-    this->team=t;
+    this->team=std::move(t);
+}
+
+
+void Player::UnionBuyingEmpty(std::shared_ptr<Team> &buying_team, std::shared_ptr<Team> &acquired_team) {
+        // שינוי המצביעים לקבוצה החדשה
+        buying_team->root_player = acquired_team->root_player;
+        acquired_team->root_player.lock()->team = buying_team;
+        buying_team->numberOfPlayers += acquired_team->numberOfPlayers;
+        buying_team->games_played = acquired_team->games_played;
+        buying_team->teamSpirit_without_root = acquired_team->teamSpirit_without_root;
+        buying_team->rootSpirit = acquired_team->rootSpirit;
+        buying_team->numberOfGK = acquired_team->numberOfGK;
+        buying_team->hasGK = acquired_team->hasGK;
+}
+void Player::UnionAcquiredEmpty(std::shared_ptr<Team> &buying_team, std::shared_ptr<Team> &acquired_team) {
+    // האם בכלל אמור לקרות משהו?
 }
