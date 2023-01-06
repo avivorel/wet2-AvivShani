@@ -792,7 +792,7 @@ AVLPlayerNode<Key, Value> *AVLPlayerTreee<Key, Value>::findIndex(AVLPlayerNode<K
         }
         if (node->GetRight() && node->GetCounterPlayerInSub() == index+1)
         { //good???????????
-            return node->GetRight();
+            return node;
         }
     }
 }

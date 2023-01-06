@@ -297,7 +297,7 @@ output_t<int> world_cup_t::get_team_points(int teamId)
 
 output_t<int> world_cup_t::get_ith_pointless_ability(int i)
 {
-    if (i == 22)
+    if (i == 7)
     {
       std::cout<<1;
     }
@@ -361,8 +361,6 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2)
         std::shared_ptr<Team> team2(new Team(teamId2));
         auto *found_team_1 = this->team_tree_by_id->Find(team1);
         auto *found_team_2 = this->team_tree_by_id->Find(team2);
-        //auto *found_team_1_ability = this->team_tree_by_ability->Find(team1);
-        //auto *found_team_2_ability = this->team_tree_by_ability->Find(team2);
 
         if (found_team_1 == nullptr || found_team_2 == nullptr)
         {
