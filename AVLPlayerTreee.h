@@ -771,7 +771,6 @@ AVLPlayerNode<Key, Value> *AVLPlayerTreee<Key, Value>::findIndex(AVLPlayerNode<K
     if (node == nullptr)
         return 0;
 
-
     if (node->GetLeft()->GetCounterPlayerInSub() == index - 1)
     {
         return node;
@@ -787,7 +786,7 @@ AVLPlayerNode<Key, Value> *AVLPlayerTreee<Key, Value>::findIndex(AVLPlayerNode<K
         return findIndex(node->GetRight(), (index - node->GetLeft()->GetCounterPlayerInSub() - 1));
     }
 
-    }
+}
 
 
 

@@ -41,7 +41,7 @@ StatusType world_cup_t::add_team(int teamId)
 StatusType world_cup_t::remove_team(int teamId)
 {
     if ( teamId == 24086){
-        std::cout << 1;
+  //     std::cout << 1;
     }
     if (teamId<=0)
     {
@@ -52,12 +52,15 @@ StatusType world_cup_t::remove_team(int teamId)
     {
         std::shared_ptr<Team> toRemove(new Team(teamId));
         auto *team_toRemove = this->team_tree_by_id->Find(toRemove);
-        auto *team_toRemove_ability = this->team_tree_by_ability->Find(toRemove);
 
         if (team_toRemove == nullptr)
         {
             return StatusType::FAILURE;
         }
+
+        std::shared_ptr<Team> actual_team1 = team_toRemove->GetValue();
+
+        auto *team_toRemove_ability = this->team_tree_by_ability->Find(actual_team1);
 
         if (team_toRemove_ability != nullptr)
         {
@@ -66,13 +69,25 @@ StatusType world_cup_t::remove_team(int teamId)
 
         }
 
-        if (team_toRemove->GetValue()->numberOfPlayers != 0)
-        {
-            team_toRemove->GetValue()->root_player.lock()->team = nullptr;
-            team_toRemove->GetValue()->root_player.lock()->teamDeleted = true; // need more?
-            team_toRemove->GetValue()->root_player.lock() = nullptr; // ?
 
+        if (actual_team1->numberOfPlayers != 0)
+        {
+            std::shared_ptr<Player> players_root = actual_team1->root_player.lock()->Find();
+
+            if (players_root == nullptr)
+            {
+                actual_team1->root_player.lock()->team = nullptr;
+                actual_team1->root_player.lock()->teamDeleted = true; // need more?
+                actual_team1->root_player.lock() = nullptr; // ?
+            }
+            else
+            {
+                players_root->team = nullptr;
+                players_root->teamDeleted = true; // need more?
+                players_root = nullptr; // ?
+            }
         }
+
         this->team_tree_by_id->Remove(team_toRemove->GetValue());
         numofTeams--;
     }
@@ -242,7 +257,7 @@ output_t<int> world_cup_t::num_played_games_for_player(int playerId)
 StatusType world_cup_t::add_player_cards(int playerId, int cards)
 {
     if (playerId == 18119){
-        std::cout << 1;
+     //  std::cout << 1;
     }
 	if (playerId <= 0 or cards < 0){
         return StatusType::INVALID_INPUT;
@@ -320,7 +335,7 @@ output_t<int> world_cup_t::get_ith_pointless_ability(int i)
 output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
 {
     if (playerId == 99321){
-        std::cout<<1;
+  //      std::cout<<1;
     }
     if (playerId <= 0)
     {
