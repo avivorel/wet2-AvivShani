@@ -24,10 +24,12 @@ void Player::Union(std::shared_ptr<Team> &buying_team ,std::shared_ptr<Team> &ac
     permutation_t a_max = buying_team->teamSpirit_without_root;
     permutation_t a_old = permutation_t::neutral();
     permutation_t b_old= permutation_t::neutral();
-    if (buying_team->root_player.lock() != nullptr){
+    if (buying_team->root_player.lock() != nullptr)
+    {
         a_old = buying_team->root_player.lock()->fixed_spirit;
     }
-    if (acquired_team->root_player.lock()== nullptr){
+    if (acquired_team->root_player.lock()== nullptr)
+    {
         b_old= acquired_team->root_player.lock()->fixed_spirit;
     }
     // check which team is bigger
@@ -38,6 +40,8 @@ void Player::Union(std::shared_ptr<Team> &buying_team ,std::shared_ptr<Team> &ac
         acquired_team->root_player.lock()->parent = buying_team->root_player.lock();
         buying_team->numberOfPlayers += acquired_team->numberOfPlayers;
         acquired_team->root_player.lock()->games_played -= buying_team->games_played;
+        buying_team->team_ability+=acquired_team->team_ability;
+
         // we need go update all of the neccesary fields. (games played, permutations, etc...)
     }
     else
@@ -48,6 +52,8 @@ void Player::Union(std::shared_ptr<Team> &buying_team ,std::shared_ptr<Team> &ac
         acquired_team->numberOfPlayers += buying_team->numberOfPlayers;
         acquired_team->root_player.lock()->team = buying_team;
         buying_team->root_player.lock()->games_played -= acquired_team->games_played;
+        buying_team->team_ability+=acquired_team->team_ability;
+
     }
 
 }
@@ -114,6 +120,8 @@ void Player::UnionBuyingEmpty(std::shared_ptr<Team> &buying_team, std::shared_pt
         buying_team->rootSpirit = acquired_team->rootSpirit;
         buying_team->numberOfGK = acquired_team->numberOfGK;
         buying_team->hasGK = acquired_team->hasGK;
+        buying_team->team_ability+=acquired_team->team_ability;
+
 }
 void Player::UnionAcquiredEmpty(std::shared_ptr<Team> &buying_team, std::shared_ptr<Team> &acquired_team) {
     // האם בכלל אמור לקרות משהו?

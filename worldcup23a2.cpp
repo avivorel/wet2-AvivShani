@@ -131,14 +131,15 @@ StatusType world_cup_t::add_player(int playerId, int teamId, const permutation_t
         }
 
         /// for index::::
-       // std::shared_ptr<Team> toRemove(new Team(teamId));
-        //auto *team_toRemove_ability = this->team_tree_by_ability->Find(toRemove);
+        std::shared_ptr<Team> toRemove(new Team(teamId));
+        auto *team_toRemove_ability = this->team_tree_by_ability->Find(toRemove);
 
-        //if (team_toRemove_ability != nullptr) {
-          //  std::shared_ptr<Team> team_ability = team_toRemove_ability->GetValue();
-            //this->team_tree_by_ability->Remove(team_ability);
-            //this->team_tree_by_ability->Insert(team_ability);
-        //}
+        if (team_toRemove_ability != nullptr)
+        {
+            std::shared_ptr<Team> team_ability = team_toRemove_ability->GetValue();
+            this->team_tree_by_ability->Remove(team_ability);
+            this->team_tree_by_ability->Insert(team_ability);
+        }
 
     } catch (const std::bad_alloc &) { return  StatusType::ALLOCATION_ERROR;}
 	return StatusType::SUCCESS;
@@ -251,7 +252,8 @@ StatusType world_cup_t::add_player_cards(int playerId, int cards)
 
         std::shared_ptr<Player> player = this->players_hashTable->Search(playerId);
         std::shared_ptr<Player> players_root = player->Find();
-        if (players_root != nullptr and players_root->teamDeleted) {
+        if (players_root != nullptr and players_root->teamDeleted)
+        {
             return StatusType::FAILURE;
         }
 
@@ -296,10 +298,10 @@ output_t<int> world_cup_t::get_team_points(int teamId)
 
 output_t<int> world_cup_t::get_ith_pointless_ability(int i)
 {
-    //if (i==4 )
-    //{
-      //  std::cout<<1;
-    //}
+    if (i == 6)
+    {
+      std::cout<<1;
+    }
 
     if (numofTeams == 0 || i<0 || i>= numofTeams )
     {
@@ -374,27 +376,35 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2)
         std::shared_ptr<Team> actual_team1 = found_team_1->GetValue();
         std::shared_ptr<Team> actual_team2 = found_team_2->GetValue();
 
-        if (actual_team1->numberOfPlayers == 0 and actual_team2->numberOfPlayers != 0)
-        {
-            actual_team2->root_player.lock()->UnionBuyingEmpty(actual_team1, actual_team2);
-            this->team_tree_by_id->Remove(team2);
-            this->team_tree_by_ability->Remove(team2);
-        }
-        else if(actual_team2->numberOfPlayers == 0)
+
+        // קניה של קבוצה ריקה
+        if(actual_team2->numberOfPlayers == 0 )
         {
             //אמורים לעשות משהו?
             this->team_tree_by_id->Remove(team2);
             this->team_tree_by_ability->Remove(team2);
         }
-        else
+
+        if (actual_team1->numberOfPlayers == 0 and actual_team2->numberOfPlayers != 0)
+        {
+            actual_team2->root_player.lock()->UnionBuyingEmpty(actual_team1, actual_team2);
+            this->team_tree_by_ability->Remove(team1);
+            this->team_tree_by_id->Remove(team2);
+            this->team_tree_by_ability->Remove(team2);
+            this->team_tree_by_ability->Insert(actual_team1);
+        }
+
+        if (actual_team1->numberOfPlayers != 0 and actual_team2->numberOfPlayers != 0)
         {
             actual_team1->root_player.lock()->Union(actual_team1, actual_team2);
-            if (actual_team1->numberOfPlayers < actual_team2->numberOfPlayers){
-                int teamid = actual_team1->team_id;
-                this->team_tree_by_id->Remove(team1);
+            if (actual_team1->numberOfPlayers < actual_team2->numberOfPlayers)
+            {
                 this->team_tree_by_ability->Remove(team1);
-                actual_team2->team_id = teamid;
+                this->team_tree_by_id->Remove(team2);
+                this->team_tree_by_ability->Remove(team2);
+
             }
+
         }
         actual_team1->points += actual_team2->points;
         numofTeams--;
