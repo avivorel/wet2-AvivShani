@@ -298,7 +298,7 @@ output_t<int> world_cup_t::get_team_points(int teamId)
 
 output_t<int> world_cup_t::get_ith_pointless_ability(int i)
 {
-    if (i == 6)
+    if (i == 22)
     {
       std::cout<<1;
     }
@@ -321,11 +321,6 @@ output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
         return StatusType::INVALID_INPUT;
     }
 
-
-    //if (playerId == 13151) {
-    //    std::cout << 1;
-   // }
-
     try {
         if (this->players_hashTable->Search(playerId) == nullptr)
         {
@@ -335,7 +330,7 @@ output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
         std::shared_ptr<Player> player = this->players_hashTable->Search(playerId);
         std::shared_ptr<Player> players_root = player->Find();
 
-        if (players_root.get() != nullptr && players_root->teamDeleted)
+        if (players_root != nullptr && players_root->teamDeleted)
         {
             return StatusType::FAILURE;
         }
@@ -353,9 +348,9 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2)
 {
 
     /// team1= buyer , team2= bought
-   // if (teamId1 == 7802 and teamId2 == 6){
-     //   std::cout << 1;
-    //}
+    if (teamId1 == 7198 ){
+        std::cout << 1;
+    }
     if (teamId1 < 0 || teamId2 <0 || teamId1 == teamId2)
     {
         return StatusType::INVALID_INPUT;
@@ -384,16 +379,16 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2)
             this->team_tree_by_ability->Remove(found_team_2_ability->GetValue());
         }
 
-        if (actual_team1->numberOfPlayers == 0 and actual_team2->numberOfPlayers != 0)
-        {
+        else if (actual_team1->numberOfPlayers == 0 and actual_team2->numberOfPlayers != 0)
+        {// להסיר אותו קודם מהעץ של האביליטי לפני שנעדכן, לעדכן ולהכניס מחדש
+            this->team_tree_by_ability->Remove(found_team_1_ability->GetValue());
             actual_team2->root_player.lock()->UnionBuyingEmpty(actual_team1, actual_team2);
-            this->team_tree_by_ability->Remove(team1);
-            this->team_tree_by_id->Remove(team2);
-            this->team_tree_by_ability->Remove(team2);
+            this->team_tree_by_id->Remove(actual_team2);
+            this->team_tree_by_ability->Remove(actual_team2);
             this->team_tree_by_ability->Insert(actual_team1);
         }
 
-        if (actual_team1->numberOfPlayers != 0 and actual_team2->numberOfPlayers != 0)
+        else if (actual_team1->numberOfPlayers != 0 and actual_team2->numberOfPlayers != 0)
         {
             actual_team1->root_player.lock()->Union(actual_team1, actual_team2);
             if (actual_team1->numberOfPlayers < actual_team2->numberOfPlayers)
@@ -401,7 +396,6 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2)
                 this->team_tree_by_ability->Remove(team1);
                 this->team_tree_by_id->Remove(team2);
                 this->team_tree_by_ability->Remove(team2);
-
             }
 
         }
