@@ -113,6 +113,14 @@ StatusType world_cup_t::add_player(int playerId, int teamId, const permutation_t
         //adding the player to the players hashTable, and to the score level=0 array
         players_hashTable->Insert(player);
 
+
+        /// for index::::
+        std::shared_ptr<Team> toRemove(new Team(teamId));
+        auto *team_toRemove = this->team_tree_by_id->Find(toRemove);
+        std::shared_ptr<Team> Removeteam = team_toRemove->GetValue();
+        this->team_tree_by_ability->Remove(Removeteam);
+
+
         foundteam->GetValue()->add_player(player);
 
         if (foundteam->GetValue()->numberOfPlayers == 1)
@@ -130,16 +138,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId, const permutation_t
             player->games_played= gamesPlayed - foundteam->GetValue()->root_player.lock()->games_played; // added
         }
 
-        /// for index::::
-        std::shared_ptr<Team> toRemove(new Team(teamId));
-        auto *team_toRemove_ability = this->team_tree_by_ability->Find(toRemove);
-
-        if (team_toRemove_ability != nullptr)
-        {
-            std::shared_ptr<Team> team_ability = team_toRemove_ability->GetValue();
-            this->team_tree_by_ability->Remove(team_ability);
-            this->team_tree_by_ability->Insert(team_ability);
-        }
+        this->team_tree_by_ability->Insert(Removeteam);
 
     } catch (const std::bad_alloc &) { return  StatusType::ALLOCATION_ERROR;}
 	return StatusType::SUCCESS;
@@ -347,11 +346,11 @@ output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
 
 StatusType world_cup_t::buy_team(int teamId1, int teamId2)
 {
-
     /// team1= buyer , team2= bought
-    if (teamId1 == 60123 && teamId2 == 95814 ){
-        std::cout << 1;
-    }
+    //if (teamId1 == 60123 && teamId2 == 95814 ){
+      //  std::cout << 1;
+    //}
+
     if (teamId1 < 0 || teamId2 <0 || teamId1 == teamId2)
     {
         return StatusType::INVALID_INPUT;
@@ -362,8 +361,8 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2)
         std::shared_ptr<Team> team2(new Team(teamId2));
         auto *found_team_1 = this->team_tree_by_id->Find(team1);
         auto *found_team_2 = this->team_tree_by_id->Find(team2);
-        auto *found_team_1_ability = this->team_tree_by_ability->Find(team1);
-        auto *found_team_2_ability = this->team_tree_by_ability->Find(team2);
+        //auto *found_team_1_ability = this->team_tree_by_ability->Find(team1);
+        //auto *found_team_2_ability = this->team_tree_by_ability->Find(team2);
 
         if (found_team_1 == nullptr || found_team_2 == nullptr)
         {
@@ -375,19 +374,17 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2)
         // קניה של קבוצה ריקה
         if(actual_team2->numberOfPlayers == 0 )
         {
-            //אמורים לעשות משהו?
-            this->team_tree_by_id->Remove(actual_team2);
-            this->team_tree_by_ability->Remove(found_team_2_ability->GetValue());
+            this->team_tree_by_id->Remove(team2);
+            this->team_tree_by_ability->Remove(actual_team2);
         }
 
         else if (actual_team1->numberOfPlayers == 0 and actual_team2->numberOfPlayers != 0)
         {// להסיר אותו קודם מהעץ של האביליטי לפני שנעדכן, לעדכן ולהכניס מחדש
             this->team_tree_by_ability->Remove(actual_team1);
             this->team_tree_by_ability->Remove(actual_team2);
-            this->team_tree_by_id->Remove(actual_team2);
+            this->team_tree_by_id->Remove(team2);
 
             actual_team2->root_player.lock()->UnionBuyingEmpty(actual_team1, actual_team2);
-
             this->team_tree_by_ability->Insert(actual_team1);
         }
 
@@ -398,6 +395,7 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2)
             this->team_tree_by_ability->Remove(actual_team2);
 
             actual_team1->root_player.lock()->Union(actual_team1, actual_team2);
+
             this->team_tree_by_ability->Insert(actual_team1);
         }
         actual_team1->points += actual_team2->points;
