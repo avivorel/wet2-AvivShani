@@ -763,7 +763,8 @@ double AVLPlayerTreee<Key,Value>::FindHigherMRank_Aux(AVLPlayerNode<Key,Value> *
 }
 
 template<class Key, class Value>
-AVLPlayerNode<Key, Value> *AVLPlayerTreee<Key, Value>::findIndex(AVLPlayerNode<Key, Value> *node, int index) {
+AVLPlayerNode<Key, Value> *AVLPlayerTreee<Key, Value>::findIndex(AVLPlayerNode<Key, Value> *node, int index)
+{
     if (node == nullptr)
         return 0;
 
@@ -773,18 +774,24 @@ AVLPlayerNode<Key, Value> *AVLPlayerTreee<Key, Value>::findIndex(AVLPlayerNode<K
             return node;
         }
 
-        if (node->GetLeft()->GetCounterPlayerInSub() > index - 1) {
+        else if (node->GetLeft()->GetCounterPlayerInSub() > index - 1)
+        {
             return findIndex(node->GetLeft(), index);
         }
-        if (node->GetLeft()->GetCounterPlayerInSub() < index - 1) {
+        else
+        {
             return findIndex(node->GetRight(), (index - node->GetLeft()->GetCounterPlayerInSub() - 1));
         }
     }
-    else {
-        if (node->GetCounterPlayerInSub() == index) {
+
+    else
+    {
+        if (node->GetCounterPlayerInSub() == index)
+        {
             return node;
         }
-        if (node->GetRight() && node->GetCounterPlayerInSub() == index+1) { //good???????????
+        if (node->GetRight() && node->GetCounterPlayerInSub() == index+1)
+        { //good???????????
             return node->GetRight();
         }
     }
