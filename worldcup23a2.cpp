@@ -376,13 +376,12 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2)
         std::shared_ptr<Team> actual_team1 = found_team_1->GetValue();
         std::shared_ptr<Team> actual_team2 = found_team_2->GetValue();
 
-
         // קניה של קבוצה ריקה
         if(actual_team2->numberOfPlayers == 0 )
         {
             //אמורים לעשות משהו?
-            this->team_tree_by_id->Remove(team2);
-            this->team_tree_by_ability->Remove(team2);
+            this->team_tree_by_id->Remove(actual_team2);
+            this->team_tree_by_ability->Remove(found_team_2->GetValue());
         }
 
         if (actual_team1->numberOfPlayers == 0 and actual_team2->numberOfPlayers != 0)
