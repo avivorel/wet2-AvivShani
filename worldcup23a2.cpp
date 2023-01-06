@@ -105,10 +105,10 @@ StatusType world_cup_t::add_player(int playerId, int teamId, const permutation_t
         return StatusType::INVALID_INPUT;
     }
 
-    //if (playerId == 47607)
-    //{
-      //  std::cout <<1;
-    //}
+    if (playerId == 38135)
+    {
+      ///  std::cout <<1;
+    }
 
     try
     {
@@ -175,23 +175,28 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2)
         std::shared_ptr<Team> team2(new Team(teamId2));
         auto *found_team_1 = this->team_tree_by_id->Find(team1);
         auto *found_team_2 = this->team_tree_by_id->Find(team2);
-        if (found_team_1 == nullptr or found_team_2 == nullptr) {
+        if (found_team_1 == nullptr or found_team_2 == nullptr)
+        {
             return StatusType::FAILURE;
         }
 
         std::shared_ptr<Team> real_team_1 = found_team_1->GetValue();
         std::shared_ptr<Team> real_team_2 = found_team_2->GetValue();
-        if (!real_team_1->hasGK or !real_team_2->hasGK) {
+        if (!real_team_1->hasGK or !real_team_2->hasGK)
+        {
             return StatusType::FAILURE;
         }
 
         // actual match playing
         int team1_ability = real_team_1->points + real_team_1->team_ability;
         int team2_ability = real_team_2->points + real_team_2->team_ability;
+
         real_team_1->games_played += 1; // adding 1 to the games count of the team and root.
         real_team_1->root_player.lock()->games_played += 1;
         real_team_2->games_played += 1;
         real_team_2->root_player.lock()->games_played += 1;
+
+
         if (team1_ability > team2_ability){
             real_team_1->points += 3;
             return {1};
@@ -248,7 +253,8 @@ output_t<int> world_cup_t::num_played_games_for_player(int playerId)
             return {player->games_played};
         }
         std::shared_ptr<Player> players_root = player->Find();
-        return {player->games_played+ players_root->games_played}; // הפלוס הוא הבעיה
+       return {player->games_played+ players_root->games_played}; // הפלוס הוא הבעיה
+
 
     } catch (const std::bad_alloc &) {return  StatusType::ALLOCATION_ERROR;}
 
@@ -334,8 +340,8 @@ output_t<int> world_cup_t::get_ith_pointless_ability(int i)
 
 output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
 {
-    if (playerId == 99321){
-  //      std::cout<<1;
+    if (playerId == 38135){
+       ///std::cout<<1;
     }
     if (playerId <= 0)
     {

@@ -28,7 +28,7 @@ void Player::Union(std::shared_ptr<Team> &buying_team ,std::shared_ptr<Team> &ac
     {
         a_old = buying_team->root_player.lock()->fixed_spirit;
     }
-    if (acquired_team->root_player.lock()== nullptr)
+    if (acquired_team->root_player.lock()!= nullptr)
     {
         b_old= acquired_team->root_player.lock()->fixed_spirit;
     }
@@ -55,6 +55,9 @@ void Player::Union(std::shared_ptr<Team> &buying_team ,std::shared_ptr<Team> &ac
         buying_team->team_ability+=acquired_team->team_ability;
 
     }
+
+    buying_team->teamSpirit_without_root = buying_team->teamSpirit_without_root * acquired_team->rootSpirit *
+            acquired_team->teamSpirit_without_root ; // shani added?????
 
 }
 
