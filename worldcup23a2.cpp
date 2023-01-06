@@ -298,7 +298,7 @@ output_t<int> world_cup_t::get_team_points(int teamId)
 
 output_t<int> world_cup_t::get_ith_pointless_ability(int i)
 {
-    if (i == 32)
+    if (i == 6)
     {
       std::cout<<1;
     }
@@ -322,9 +322,9 @@ output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
     }
 
 
-    if (playerId == 24989) {
-        std::cout << 1;
-    }
+    //if (playerId == 13151) {
+    //    std::cout << 1;
+   // }
 
     try {
         if (this->players_hashTable->Search(playerId) == nullptr)
@@ -376,31 +376,33 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2)
         std::shared_ptr<Team> actual_team1 = found_team_1->GetValue();
         std::shared_ptr<Team> actual_team2 = found_team_2->GetValue();
 
-
         // קניה של קבוצה ריקה
         if(actual_team2->numberOfPlayers == 0 )
         {
             //אמורים לעשות משהו?
-            this->team_tree_by_id->Remove(team2);
-            this->team_tree_by_ability->Remove(actual_team2);
+            this->team_tree_by_id->Remove(actual_team2);
+            this->team_tree_by_ability->Remove(found_team_2_ability->GetValue());
         }
 
         if (actual_team1->numberOfPlayers == 0 and actual_team2->numberOfPlayers != 0)
         {
             actual_team2->root_player.lock()->UnionBuyingEmpty(actual_team1, actual_team2);
-            this->team_tree_by_ability->Remove(actual_team1);
+            this->team_tree_by_ability->Remove(team1);
             this->team_tree_by_id->Remove(team2);
-            this->team_tree_by_ability->Remove(actual_team2);
+            this->team_tree_by_ability->Remove(team2);
             this->team_tree_by_ability->Insert(actual_team1);
         }
 
         if (actual_team1->numberOfPlayers != 0 and actual_team2->numberOfPlayers != 0)
         {
             actual_team1->root_player.lock()->Union(actual_team1, actual_team2);
-            this->team_tree_by_ability->Remove(actual_team1);
-            this->team_tree_by_id->Remove(actual_team2);
-            this->team_tree_by_ability->Remove(actual_team2);
-            this->team_tree_by_ability->Insert(actual_team1);
+            if (actual_team1->numberOfPlayers < actual_team2->numberOfPlayers)
+            {
+                this->team_tree_by_ability->Remove(team1);
+                this->team_tree_by_id->Remove(team2);
+                this->team_tree_by_ability->Remove(team2);
+
+            }
 
         }
         actual_team1->points += actual_team2->points;
