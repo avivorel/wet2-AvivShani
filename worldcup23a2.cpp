@@ -307,7 +307,8 @@ output_t<int> world_cup_t::get_ith_pointless_ability(int i)
     {
         return StatusType::FAILURE;
     }
-    try {
+    try
+    {
         auto* newTeam = team_tree_by_ability->findIndex(team_tree_by_ability->GetRoot(), i+1 );
         return {newTeam->GetValue()->team_id};
     } catch (const std::bad_alloc &){return  StatusType::ALLOCATION_ERROR;}
@@ -348,7 +349,7 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2)
 {
 
     /// team1= buyer , team2= bought
-    if (teamId1 == 7198 ){
+    if (teamId1 == 60123 && teamId2 == 95814 ){
         std::cout << 1;
     }
     if (teamId1 < 0 || teamId2 <0 || teamId1 == teamId2)
@@ -381,23 +382,23 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2)
 
         else if (actual_team1->numberOfPlayers == 0 and actual_team2->numberOfPlayers != 0)
         {// להסיר אותו קודם מהעץ של האביליטי לפני שנעדכן, לעדכן ולהכניס מחדש
-            this->team_tree_by_ability->Remove(found_team_1_ability->GetValue());
-            actual_team2->root_player.lock()->UnionBuyingEmpty(actual_team1, actual_team2);
-            this->team_tree_by_id->Remove(actual_team2);
+            this->team_tree_by_ability->Remove(actual_team1);
             this->team_tree_by_ability->Remove(actual_team2);
+            this->team_tree_by_id->Remove(actual_team2);
+
+            actual_team2->root_player.lock()->UnionBuyingEmpty(actual_team1, actual_team2);
+
             this->team_tree_by_ability->Insert(actual_team1);
         }
 
         else if (actual_team1->numberOfPlayers != 0 and actual_team2->numberOfPlayers != 0)
         {
-            actual_team1->root_player.lock()->Union(actual_team1, actual_team2);
-            if (actual_team1->numberOfPlayers < actual_team2->numberOfPlayers)
-            {
-                this->team_tree_by_ability->Remove(team1);
-                this->team_tree_by_id->Remove(team2);
-                this->team_tree_by_ability->Remove(team2);
-            }
+            this->team_tree_by_ability->Remove(actual_team1);
+            this->team_tree_by_id->Remove(team2);
+            this->team_tree_by_ability->Remove(actual_team2);
 
+            actual_team1->root_player.lock()->Union(actual_team1, actual_team2);
+            this->team_tree_by_ability->Insert(actual_team1);
         }
         actual_team1->points += actual_team2->points;
         numofTeams--;
