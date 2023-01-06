@@ -381,7 +381,7 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2)
         {
             //אמורים לעשות משהו?
             this->team_tree_by_id->Remove(actual_team2);
-            this->team_tree_by_ability->Remove(found_team_2->GetValue());
+            this->team_tree_by_ability->Remove(found_team_2_ability->GetValue());
         }
 
         if (actual_team1->numberOfPlayers == 0 and actual_team2->numberOfPlayers != 0)
