@@ -40,9 +40,9 @@ StatusType world_cup_t::add_team(int teamId)
 
 StatusType world_cup_t::remove_team(int teamId)
 {
-    //if ( teamId == 7802){
-      //  std::cout << 1;
-    //}
+    if ( teamId == 24086){
+        std::cout << 1;
+    }
     if (teamId<=0)
     {
         return StatusType::INVALID_INPUT;
@@ -70,6 +70,8 @@ StatusType world_cup_t::remove_team(int teamId)
         {
             team_toRemove->GetValue()->root_player.lock()->team = nullptr;
             team_toRemove->GetValue()->root_player.lock()->teamDeleted = true; // need more?
+            team_toRemove->GetValue()->root_player.lock() = nullptr; // ?
+
         }
         this->team_tree_by_id->Remove(team_toRemove->GetValue());
         numofTeams--;
@@ -239,6 +241,9 @@ output_t<int> world_cup_t::num_played_games_for_player(int playerId)
 
 StatusType world_cup_t::add_player_cards(int playerId, int cards)
 {
+    if (playerId == 18119){
+        std::cout << 1;
+    }
 	if (playerId <= 0 or cards < 0){
         return StatusType::INVALID_INPUT;
     }
@@ -251,6 +256,9 @@ StatusType world_cup_t::add_player_cards(int playerId, int cards)
 
         std::shared_ptr<Player> player = this->players_hashTable->Search(playerId);
         std::shared_ptr<Player> players_root = player->Find();
+        if (player->parent == nullptr and player->team == nullptr){
+            return StatusType::FAILURE;
+        }
         if (players_root != nullptr and players_root->teamDeleted)
         {
             return StatusType::FAILURE;
@@ -297,11 +305,6 @@ output_t<int> world_cup_t::get_team_points(int teamId)
 
 output_t<int> world_cup_t::get_ith_pointless_ability(int i)
 {
-    if (i == 7)
-    {
-      std::cout<<1;
-    }
-
     if (numofTeams == 0 || i<0 || i>= numofTeams )
     {
         return StatusType::FAILURE;
@@ -316,6 +319,9 @@ output_t<int> world_cup_t::get_ith_pointless_ability(int i)
 
 output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
 {
+    if (playerId == 99321){
+        std::cout<<1;
+    }
     if (playerId <= 0)
     {
         return StatusType::INVALID_INPUT;
@@ -329,7 +335,9 @@ output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
 
         std::shared_ptr<Player> player = this->players_hashTable->Search(playerId);
         std::shared_ptr<Player> players_root = player->Find();
-
+        if (player->parent == nullptr and player->team == nullptr){
+            return StatusType::FAILURE;
+        }
         if (players_root != nullptr && players_root->teamDeleted)
         {
             return StatusType::FAILURE;
