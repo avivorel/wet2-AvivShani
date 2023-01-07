@@ -4,7 +4,7 @@ int HashTable::hashFunction(int i) const {
     return (i % this->array_size);
 }
 
-HashTable::HashTable():arr(nullptr), elements_counter(0), array_size(5) {
+HashTable::HashTable(): array_size(5), elements_counter(0), arr(nullptr) {
     this->arr = new LinkedList<std::shared_ptr<Player>>*[5];
     for (int i = 0; i < 5; ++i) {
         this->arr[i] = nullptr;
