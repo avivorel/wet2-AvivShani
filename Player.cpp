@@ -49,20 +49,34 @@ void Player::Union(std::shared_ptr<Team> &buying_team ,std::shared_ptr<Team> &ac
     { // in this case, the acquired team is bigger, so we have to change the acquired team details to the buying team's details
         acquired_team->root_player.lock()->fixed_spirit =  a_old * a_max * b_old;
         buying_team->root_player.lock()->fixed_spirit =  acquired_team->root_player.lock()->fixed_spirit.inv() * a_old;
-        std::shared_ptr<Player> right_parent = buying_team->root_player.lock()->Find();
-        if (right_parent != nullptr){
-            right_parent->parent = acquired_team->root_player.lock();
-            right_parent->games_played -= acquired_team->root_player.lock()->games_played;
-
+        std::shared_ptr<Player> right_parent_buying = buying_team->root_player.lock()->Find();
+        std::shared_ptr<Player> right_parent_acquired = acquired_team->root_player.lock()->Find();
+        if (right_parent_buying != nullptr) {
+            right_parent_buying->parent = acquired_team->root_player.lock();
+            if (right_parent_acquired != nullptr)
+            {
+                right_parent_buying->games_played -=
+                        acquired_team->root_player.lock()->games_played + right_parent_acquired->games_played;
+            }
+            else
+            {
+            right_parent_buying->games_played -= acquired_team->root_player.lock()->games_played;
+            }
         }
         else {
             buying_team->root_player.lock()->parent = acquired_team->root_player.lock();
-            buying_team->root_player.lock()->games_played -= acquired_team->root_player.lock()->games_played;
+            if (right_parent_acquired != nullptr)
+            {
+                buying_team->root_player.lock()->games_played -= acquired_team->root_player.lock()->games_played + right_parent_acquired->games_played;
+            }
+            else
+            {
+                buying_team->root_player.lock()->games_played -= acquired_team->root_player.lock()->games_played;
+            }
         }
         acquired_team->numberOfPlayers += buying_team->numberOfPlayers;
         acquired_team->root_player.lock()->team = buying_team;
         buying_team->team_ability+=acquired_team->team_ability;
-
     }
 
     buying_team->teamSpirit_without_root = buying_team->teamSpirit_without_root * acquired_team->rootSpirit *

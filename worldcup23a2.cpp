@@ -428,7 +428,9 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2)
         }
         actual_team1->points += actual_team2->points;
         numofTeams--;
-        //actual_team1->root_player.lock()->Find();
+        if (actual_team1->root_player.lock() != nullptr){
+            actual_team1->root_player.lock()->Find();
+        }
     } catch (const std::bad_alloc &) { return  StatusType::ALLOCATION_ERROR;}
 
 	return StatusType::SUCCESS;
