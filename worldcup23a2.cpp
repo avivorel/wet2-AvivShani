@@ -197,10 +197,24 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2)
         int team1_ability = real_team_1->points + real_team_1->team_ability;
         int team2_ability = real_team_2->points + real_team_2->team_ability;
 
-        real_team_1->games_played += 1; // adding 1 to the games count of the team and root.
-        real_team_1->root_player.lock()->games_played += 1;
-        real_team_2->games_played += 1;
-        real_team_2->root_player.lock()->games_played += 1;
+        real_team_1->games_played += 1;
+        real_team_2->games_played += 1;// adding 1 to the games count of the team and root.
+        //test
+        std::shared_ptr<Player> real_team1_root = real_team_1->root_player.lock()->Find();
+        if (real_team1_root != nullptr){
+            real_team1_root->games_played += 1;
+        }
+        else {
+            real_team_1->root_player.lock()->games_played += 1;
+        }
+        std::shared_ptr<Player> real_team2_root = real_team_2->root_player.lock()->Find();
+        if (real_team2_root != nullptr){
+            real_team2_root->games_played += 1;
+        }
+        else {
+            real_team_2->root_player.lock()->games_played += 1;
+        }
+        //real_team_2->root_player.lock()->games_played += 1;
 
 
         if (team1_ability > team2_ability){
@@ -238,9 +252,9 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2)
 
 output_t<int> world_cup_t::num_played_games_for_player(int playerId)
 {
-    /*if (playerId == 88938){
-        std::cout << 1;
-    }*/
+    if (playerId == 23438){
+      //  std::cout << 1;
+    }
     if (playerId <= 0)
     {
         return StatusType::INVALID_INPUT;
@@ -344,6 +358,9 @@ output_t<int> world_cup_t::get_ith_pointless_ability(int i)
 
 output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
 {
+    if (playerId == 35358){
+    //    std::cout <<1;
+    }
     if (playerId <= 0)
     {
         return StatusType::INVALID_INPUT;
@@ -377,7 +394,9 @@ output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
 StatusType world_cup_t::buy_team(int teamId1, int teamId2)
 {
     /// team1= buyer , team2= bought
-
+    if (teamId1 == 66203 and teamId2 == 3532){
+       // std::cout << 1;
+    }
     if (teamId1 <= 0 || teamId2 <= 0 || teamId1 == teamId2)
     {
         return StatusType::INVALID_INPUT;
@@ -431,6 +450,7 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2)
         if (actual_team1->root_player.lock() != nullptr){
             actual_team1->root_player.lock()->Find();
         }
+        //std::cout<<1;
     } catch (const std::bad_alloc &) { return  StatusType::ALLOCATION_ERROR;}
 
 	return StatusType::SUCCESS;
