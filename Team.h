@@ -14,13 +14,14 @@ class Team {
 public:
 
     int team_id;
+    int points;
     int games_played;
     int numberOfPlayers;
     int numberOfGK;
     bool hasGK;
     std::weak_ptr<Player> root_player;
-    int points;
-    permutation_t teamSpirit_without_root;
+
+    permutation_t teamSpirit;
     permutation_t rootSpirit;
 
     int team_ability;
