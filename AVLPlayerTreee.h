@@ -230,8 +230,11 @@ int AVLPlayerNode<Key,Value>::GetLevel() {
 }
 */
 
-template<class Key,class Value>
+template<class Key,class Value> ///////tfvffyy!!!!!!!!
 int AVLPlayerNode<Key,Value>::GetCounterPlayerInSub() {
+    if (this == nullptr)
+        return 0;
+
     return this->counter_players_in_subtree;
 }
 
@@ -768,34 +771,24 @@ AVLPlayerNode<Key, Value> *AVLPlayerTreee<Key, Value>::findIndex(AVLPlayerNode<K
     if (node == nullptr)
         return 0;
 
-    if(node->GetLeft() != nullptr)
+    if (node->GetLeft()->GetCounterPlayerInSub() == index - 1)
     {
-        if (node->GetLeft()->GetCounterPlayerInSub() == index - 1) {
-            return node;
-        }
+        return node;
+    }
 
-        else if (node->GetLeft()->GetCounterPlayerInSub() > index - 1)
-        {
-            return findIndex(node->GetLeft(), index);
-        }
-        else
-        {
-            return findIndex(node->GetRight(), (index - node->GetLeft()->GetCounterPlayerInSub() - 1));
-        }
+    else if (node->GetLeft()->GetCounterPlayerInSub() > index - 1)
+    {
+        return findIndex(node->GetLeft(), index);
     }
 
     else
     {
-        if (node->GetCounterPlayerInSub() == index)
-        {
-            return node;
-        }
-        if (node->GetRight() && node->GetCounterPlayerInSub() == index+1)
-        { //good???????????
-            return node;
-        }
+        return findIndex(node->GetRight(), (index - node->GetLeft()->GetCounterPlayerInSub() - 1));
     }
+
 }
+
+
 
 
 #endif //DS2_AVLRANKTREEE_H

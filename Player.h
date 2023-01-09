@@ -40,6 +40,7 @@ public:
     void UnionBuyingEmpty(std::shared_ptr<Team> &buying_team, std::shared_ptr<Team> &acquired_team);
     void UnionAcquiredEmpty(std::shared_ptr<Team> &buying_team, std::shared_ptr<Team> &acquired_team);
     std::shared_ptr<Player> Find();
+    Player* getRoot();
 
     void setTeam(std::shared_ptr<Team> t);
 
