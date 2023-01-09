@@ -1,7 +1,3 @@
-//
-// Created by darkm on 08/12/2022.
-//
-
 #ifndef SOLUTION_LINKEDLIST_H
 #define SOLUTION_LINKEDLIST_H
 
@@ -12,7 +8,8 @@ public:
     Node* next;
     Node* prev;
     ~Node() = default;
-    Node(T data){
+    explicit Node(T data)
+    {
         this->data = data;
         next = nullptr;
         prev = nullptr;
@@ -36,13 +33,21 @@ public:
         head = nullptr;
         tail = nullptr;
     }
-    ~LinkedList() = default;
-    void insert(T data) {
-        Node<T> *newNode = new Node<T>(data);
-        if (head == nullptr) {
+
+   ~LinkedList(){
+       deleteList();
+    }
+    void insert(T data)
+    {
+        auto* newNode = new Node<T>(data);
+
+        if (head == nullptr)
+        {
             head = newNode;
             tail = newNode;
-        } else {
+        }
+        else
+        {
             tail->next = newNode;
             newNode->prev = tail;
             tail = newNode;

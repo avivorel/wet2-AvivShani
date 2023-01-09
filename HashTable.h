@@ -1,8 +1,3 @@
-//
-// Created by ofek on 05/01/2022.
-//
-
-
 #ifndef DS2_HASHTABLE_H
 #define DS2_HASHTABLE_H
 

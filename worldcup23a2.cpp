@@ -3,8 +3,8 @@
 
 world_cup_t::world_cup_t()
 {
-    team_tree_by_id = new AVLPlayerTreee<compareTeamId,std::shared_ptr<Team>>;
-    team_tree_by_ability = new AVLPlayerTreee<compareTeamAbility,std::shared_ptr<Team>>;
+    team_tree_by_id = new RankAVLPlayerTree<compareTeamId,std::shared_ptr<Team>>;
+    team_tree_by_ability = new RankAVLPlayerTree<compareTeamAbility,std::shared_ptr<Team>>;
     players_hashTable= new HashTable();
     numofTeams=0;
 }
@@ -18,13 +18,13 @@ world_cup_t::~world_cup_t()
 
 StatusType world_cup_t::add_team(int teamId)
 {
-
     if (teamId <= 0)
     {
         return StatusType::INVALID_INPUT;
     }
     try {
         std::shared_ptr<Team> teamFinder(new Team(teamId));
+
         auto *foundTeam = this->team_tree_by_id->Find(teamFinder);
         if (foundTeam != nullptr)
         {
@@ -42,9 +42,6 @@ StatusType world_cup_t::add_team(int teamId)
 
 StatusType world_cup_t::remove_team(int teamId)
 {
-    /*if ( teamId == 24086){
-  //     std::cout << 1;
-    }*/
     if (teamId<=0)
     {
         return StatusType::INVALID_INPUT;
@@ -60,13 +57,13 @@ StatusType world_cup_t::remove_team(int teamId)
             return StatusType::FAILURE;
         }
 
-        std::shared_ptr<Team> actual_team1 = team_toRemove->GetValue();
+        std::shared_ptr<Team> actual_team1 = team_toRemove->DataGet();
 
         auto *team_toRemove_ability = this->team_tree_by_ability->Find(actual_team1);
 
         if (team_toRemove_ability != nullptr)
         {
-            std::shared_ptr<Team> team_ability = team_toRemove_ability->GetValue();
+            std::shared_ptr<Team> team_ability = team_toRemove_ability->DataGet();
             this->team_tree_by_ability->Remove(team_ability);
 
         }
@@ -86,11 +83,10 @@ StatusType world_cup_t::remove_team(int teamId)
             {
                 players_root->team = nullptr;
                 players_root->teamDeleted = true; // need more?
-                /*players_root = nullptr; // ?*/
             }
         }
 
-        this->team_tree_by_id->Remove(team_toRemove->GetValue());
+        this->team_tree_by_id->Remove(team_toRemove->DataGet());
         numofTeams--;
     }
     catch (const std::bad_alloc &) { return  StatusType::ALLOCATION_ERROR;}
@@ -107,14 +103,10 @@ StatusType world_cup_t::add_player(int playerId, int teamId, const permutation_t
         return StatusType::INVALID_INPUT;
     }
 
-    if (playerId == 87763){
-      //  std::cout <<1;
-    }
-
     try
     {
         if(this->players_hashTable->Search(playerId) != nullptr) { //if the player already exists
-            return StatusType::FAILURE;
+           return StatusType::FAILURE;
         }
         //creating the player's shared_ptr
         std::shared_ptr<Player> player = std::make_shared<Player>(playerId, teamId, spirit, gamesPlayed,ability
@@ -128,47 +120,37 @@ StatusType world_cup_t::add_player(int playerId, int teamId, const permutation_t
             return StatusType::FAILURE;
         }
 
-        //adding the player to the players hashTable, and to the score level=0 array
         players_hashTable->Insert(player);
 
 
         /// for index::::
         std::shared_ptr<Team> toRemove(new Team(teamId));
         auto *team_toRemove = this->team_tree_by_id->Find(toRemove);
-        std::shared_ptr<Team> Removeteam = team_toRemove->GetValue();
+        std::shared_ptr<Team> Removeteam = team_toRemove->DataGet();
         this->team_tree_by_ability->Remove(Removeteam);
 
 
-        foundteam->GetValue()->add_player(player);
+        foundteam->DataGet()->add_player(player);
 
-        if (foundteam->GetValue()->numberOfPlayers == 1)
+        if (foundteam->DataGet()->numberOfPlayers == 1)
         {
-            player->team=foundteam->GetValue();
+            player->team=foundteam->DataGet();
             player->parent= nullptr;
-            foundteam->GetValue()->rootSpirit = spirit; /// maybe not needed
-            foundteam->GetValue()->teamSpirit= spirit;
+            foundteam->DataGet()->rootSpirit = spirit;
+            foundteam->DataGet()->teamSpirit= spirit;
         }
         else
         {
-            /// permutation !!!!
 
-            player->parent = (foundteam->GetValue()->root_player.lock()->Find() != nullptr) ?
-                    foundteam->GetValue()->root_player.lock()->Find() : foundteam->GetValue()->root_player.lock();
+            player->parent = (foundteam->DataGet()->root_player.lock()->Find() != nullptr) ?
+                    foundteam->DataGet()->root_player.lock()->Find() : foundteam->DataGet()->root_player.lock();
 
-            foundteam->GetValue()->teamSpirit =  foundteam->GetValue()->teamSpirit * spirit;
+            foundteam->DataGet()->teamSpirit =  foundteam->DataGet()->teamSpirit * spirit;
 
-            player->fixed_spirit = player->parent->fixed_spirit.inv() * foundteam->GetValue()->teamSpirit;
+            player->fixed_spirit = player->parent->fixed_spirit.inv() * foundteam->DataGet()->teamSpirit;
 
-            //std::shared_ptr<Player> new_root = foundteam->GetValue()->root_player.lock()->Find();
+            player->games_played= gamesPlayed - player->parent->games_played;
 
-            //if (new_root != nullptr)
-            //{
-                player->games_played= gamesPlayed - player->parent->games_played;
-            //}
-            //else
-            //{
-              //  player->games_played = gamesPlayed - foundteam->GetValue()->root_player.lock()->games_played; // added
-            //}
         }
 
         this->team_tree_by_ability->Insert(Removeteam);
@@ -196,8 +178,8 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2)
             return StatusType::FAILURE;
         }
 
-        std::shared_ptr<Team> real_team_1 = found_team_1->GetValue();
-        std::shared_ptr<Team> real_team_2 = found_team_2->GetValue();
+        std::shared_ptr<Team> real_team_1 = found_team_1->DataGet();
+        std::shared_ptr<Team> real_team_2 = found_team_2->DataGet();
         if (!real_team_1->hasGK or !real_team_2->hasGK)
         {
             return StatusType::FAILURE;
@@ -209,7 +191,7 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2)
 
         real_team_1->games_played += 1;
         real_team_2->games_played += 1;// adding 1 to the games count of the team and root.
-        //test
+
         std::shared_ptr<Player> real_team1_root = real_team_1->root_player.lock()->Find();
         if (real_team1_root != nullptr){
             real_team1_root->games_played += 1;
@@ -224,7 +206,7 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2)
         else {
             real_team_2->root_player.lock()->games_played += 1;
         }
-        //real_team_2->root_player.lock()->games_played += 1;
+
 
 
         if (team1_ability > team2_ability){
@@ -262,9 +244,7 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2)
 
 output_t<int> world_cup_t::num_played_games_for_player(int playerId)
 {
-    if (playerId == 23438){
-        //  std::cout << 1;
-    }
+
     if (playerId <= 0)
     {
         return StatusType::INVALID_INPUT;
@@ -290,9 +270,6 @@ output_t<int> world_cup_t::num_played_games_for_player(int playerId)
 
 StatusType world_cup_t::add_player_cards(int playerId, int cards)
 {
-    /*if (playerId == 18119){
-     //  std::cout << 1;
-    }*/
     if (playerId <= 0 or cards < 0){
         return StatusType::INVALID_INPUT;
     }
@@ -347,7 +324,7 @@ output_t<int> world_cup_t::get_team_points(int teamId)
             return StatusType::FAILURE;
         }
         else{
-            return {teamnode->GetValue()->points};
+            return {teamnode->DataGet()->points};
         }
     } catch (const std::bad_alloc &) {return  StatusType::ALLOCATION_ERROR;}
 }
@@ -361,16 +338,13 @@ output_t<int> world_cup_t::get_ith_pointless_ability(int i)
     try
     {
         auto* newTeam = team_tree_by_ability->findIndex(team_tree_by_ability->GetRoot(), i+1 );
-        return {newTeam->GetValue()->team_id};
+        return {newTeam->DataGet()->team_id};
     } catch (const std::bad_alloc &){return  StatusType::ALLOCATION_ERROR;}
 
 }
 
 output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
 {
-    if (playerId == 87763){
-         //  std::cout <<1;
-    }
     if (playerId <= 0)
     {
         return StatusType::INVALID_INPUT;
@@ -398,15 +372,11 @@ output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
         return { players_root->fixed_spirit * player->fixed_spirit}; /// how to return
 
     } catch (const std::bad_alloc &){return  StatusType::ALLOCATION_ERROR;}
-    //return permutation_t();
 }
 
 StatusType world_cup_t::buy_team(int teamId1, int teamId2)
 {
     /// team1= buyer , team2= bought
-    if (teamId1 == 66203 and teamId2 == 9){
-     //   std::cout << 1;
-    }
     if (teamId1 <= 0 || teamId2 <= 0 || teamId1 == teamId2)
     {
         return StatusType::INVALID_INPUT;
@@ -422,10 +392,9 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2)
         {
             return StatusType::FAILURE;
         }
-        std::shared_ptr<Team> actual_team1 = found_team_1->GetValue();
-        std::shared_ptr<Team> actual_team2 = found_team_2->GetValue();
+        std::shared_ptr<Team> actual_team1 = found_team_1->DataGet();
+        std::shared_ptr<Team> actual_team2 = found_team_2->DataGet();
 
-        // קניה של קבוצה ריקה
         if(actual_team2->numberOfPlayers == 0 )
         {
             this->team_tree_by_id->Remove(team2);
@@ -462,7 +431,6 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2)
         if (actual_team1->root_player.lock() != nullptr){
             actual_team1->root_player.lock()->Find();
         }
-        //std::cout<<1;
     } catch (const std::bad_alloc &) { return  StatusType::ALLOCATION_ERROR;}
 
     return StatusType::SUCCESS;

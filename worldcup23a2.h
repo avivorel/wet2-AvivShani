@@ -19,7 +19,7 @@
 #include "Player.h"
 #include "HashTable.h"
 #include "Team.h"
-#include "AVLPlayerTreee.h"
+#include "RankAVLPlayerTree.h"
 
 class world_cup_t {
 private:
@@ -27,8 +27,8 @@ private:
    // int numberOfPlayers;
    /* AVLTree<compareTeamId,std::shared_ptr<Team>> *team_tree_by_id;
     AVLTree<compareTeamAbility,std::shared_ptr<Team>> *team_tree_by_ability;*/
-   AVLPlayerTreee<compareTeamId,std::shared_ptr<Team>> *team_tree_by_id;
-    AVLPlayerTreee<compareTeamAbility,std::shared_ptr<Team>> *team_tree_by_ability;
+   RankAVLPlayerTree<compareTeamId,std::shared_ptr<Team>> *team_tree_by_id;
+    RankAVLPlayerTree<compareTeamAbility,std::shared_ptr<Team>> *team_tree_by_ability;
    //HashTable Players
     HashTable* players_hashTable;
     int numofTeams;

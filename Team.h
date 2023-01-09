@@ -5,7 +5,7 @@
 #ifndef SOLUTION_TEAM_H
 #define SOLUTION_TEAM_H
 
-#include "AVLTree.h"
+//#include "AVLTree.h"
 #include "Player.h"
 #include <memory>
 #include <iostream>
