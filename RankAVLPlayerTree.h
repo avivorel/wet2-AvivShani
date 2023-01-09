@@ -87,7 +87,6 @@ public:
 
     PlayerNode<Key,Value> *FindMinValInTree(PlayerNode<Key,Value> *node);
 
-    PlayerNode<Key,Value> *FindMaxValInTree(PlayerNode<Key,Value> *node);
 
 
 };
@@ -95,33 +94,18 @@ public:
 
 template<class Key,class Value>
 void PlayerNode<Key,Value>::UpdateHeight() {
-
-    int left_height = 0;
-    int right_height = 0;
-
+    int left = (NodeLeft == nullptr) ? -1 : NodeLeft->GetHeight();
+    int right = (NodeRight == nullptr) ? -1 : NodeRight->GetHeight();
     this->NumberOfPlayerInSubTreeIncluded = 1;
-
-    if (NodeLeft == nullptr) {
-        left_height = -1;
-    }
-    else
+    if (NodeLeft != nullptr)
     {
-        left_height = NodeLeft->GetHeight();
         this->NumberOfPlayerInSubTreeIncluded += NodeLeft->NumberOfPlayerInSubTreeIncluded;
     }
-
-    if (NodeRight == nullptr)
+    if (NodeRight != nullptr)
     {
-        right_height = -1;
-    }
-    else
-    {
-        right_height = NodeRight->GetHeight();
         this->NumberOfPlayerInSubTreeIncluded += NodeRight->NumberOfPlayerInSubTreeIncluded;
-
     }
-
-    this->height = (std::max(left_height, right_height) + 1);
+    this->height = left > right ? left + 1 : right + 1;
 }
 
 
@@ -411,13 +395,6 @@ PlayerNode<Key,Value> *RankAVLPlayerTree<Key,Value>::HelperForFind(PlayerNode<Ke
         return HelperForFind(node->LeftNodeGet(), value);
     }
 
-}
-
-
-
-template<class Key,class Value>
-PlayerNode<Key,Value> *RankAVLPlayerTree<Key,Value>::FindMaxValInTree(PlayerNode<Key,Value> *node) {
-    return (node->RightNodeGet() == nullptr && node->LeftNodeGet() == nullptr) ? node : FindMaxValInTree(node->RightNodeGet());
 }
 
 
