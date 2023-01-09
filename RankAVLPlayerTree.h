@@ -61,7 +61,7 @@ class RankAVLPlayerTree {
 
     void RRRotation(PlayerNode<Key,Value> *node);
 
-    void HelpForInsert(PlayerNode<Key,Value> *node, PlayerNode<Key,Value> *new_node);
+    void HelpForInsert(PlayerNode<Key,Value> *root_to_insert, PlayerNode<Key,Value> *new_node);
 
     void RotationNeed(PlayerNode<Key,Value> *node);
 
@@ -71,7 +71,7 @@ public:
 
     ~RankAVLPlayerTree() { delete root;};
 
-    PlayerNode<Key,Value> *HelpForRemove(PlayerNode<Key,Value> *node, const Value& data);
+    PlayerNode<Key,Value> *HelpForRemove(PlayerNode<Key,Value> *root_to_remove, const Value& val);
 
     bool Insert(const Value &data);
 
@@ -240,31 +240,31 @@ bool RankAVLPlayerTree<Key,Value>::Insert(const Value &data) {
 
 
 template<class Key,class Value>
-void RankAVLPlayerTree<Key,Value>::HelpForInsert(PlayerNode<Key,Value> *node, PlayerNode<Key,Value> *new_node) {
-    if (Key()(node->DataGet(), new_node->DataGet()) == 1) {
+void RankAVLPlayerTree<Key,Value>::HelpForInsert(PlayerNode<Key,Value> *root_to_insert, PlayerNode<Key,Value> *new_node) {
+    if (Key()(root_to_insert->DataGet(), new_node->DataGet()) == 1) {
 
-        if (node->LeftNodeGet() == nullptr) {
-            node->LeftNodeSet(new_node);
-            new_node->UpNodeSet(node);
+        if (root_to_insert->LeftNodeGet() == nullptr) {
+            root_to_insert->LeftNodeSet(new_node);
+            new_node->UpNodeSet(root_to_insert);
         }
         else
         {
-            HelpForInsert(node->LeftNodeGet(), new_node);
+            HelpForInsert(root_to_insert->LeftNodeGet(), new_node);
         }
     }
     else
     {
-        if (node->RightNodeGet() == nullptr)
+        if (root_to_insert->RightNodeGet() == nullptr)
         {
-            node->RightNodeSet(new_node);
-            new_node->UpNodeSet(node);
+            root_to_insert->RightNodeSet(new_node);
+            new_node->UpNodeSet(root_to_insert);
         }
         else
         {
-            HelpForInsert(node->RightNodeGet(), new_node);
+            HelpForInsert(root_to_insert->RightNodeGet(), new_node);
         }
     }
-    RotationNeed(node);
+    RotationNeed(root_to_insert);
 
 }
 
@@ -276,9 +276,9 @@ PlayerNode<Key,Value> *RankAVLPlayerTree<Key,Value>::FindMinValInTree(PlayerNode
 
 
 template <class Key,class Value>
-PlayerNode<Key,Value>* RankAVLPlayerTree<Key,Value>::HelpForRemove(PlayerNode<Key,Value>* node, const Value& data)
+PlayerNode<Key,Value>* RankAVLPlayerTree<Key,Value>::HelpForRemove(PlayerNode<Key,Value>* root_to_remove, const Value& val)
 {
-    PlayerNode<Key,Value>* removing = Find(data);
+    PlayerNode<Key,Value>* removing = Find(val);
     PlayerNode<Key,Value>* helper_removing_parent_node = nullptr;
 
     if (removing->LeftNodeGet() && removing->RightNodeGet()) {
@@ -363,11 +363,11 @@ bool RankAVLPlayerTree<Key,Value>::Remove(const Value &data) {
         return false;
     }
 
-    PlayerNode<Key,Value> *parent_of_deleted = HelpForRemove(root, data);
+    PlayerNode<Key,Value> *UpDeleted = HelpForRemove(root, data);
 
-    while (parent_of_deleted != nullptr) {
-        RotationNeed(parent_of_deleted);
-        parent_of_deleted = parent_of_deleted->UpNodeGet();
+    while (UpDeleted != nullptr) {
+        RotationNeed(UpDeleted);
+        UpDeleted = UpDeleted->UpNodeGet();
     }
     return true;
 
