@@ -13,12 +13,6 @@ isGoalKeeper) :
 
 
 
-int Player::comparePlayerId(const std::shared_ptr<Player> &player1, const std::shared_ptr<Player> &player2) {
-    if (player1->player_id > player2->player_id) return 1;
-    else if(player1->player_id < player2->player_id ) return -1;
-    return 0;
-}
-
 void Player::Union(std::shared_ptr<Team> &buying_team ,std::shared_ptr<Team> &acquired_team)
 {
     // check which team is bigger
@@ -116,6 +110,7 @@ void Player::UnionBuyingEmpty(std::shared_ptr<Team> &buying_team, std::shared_pt
     buying_team->numberOfGK = acquired_team->numberOfGK;
     buying_team->hasGK = acquired_team->hasGK;
     buying_team->team_ability+=acquired_team->team_ability;
+
 
 
 }
