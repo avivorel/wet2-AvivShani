@@ -158,14 +158,14 @@ void RankAVLTeamTree<Key,Value>::LLRotation(TeamNode<Key,Value> *node)
     node->RightNodeSet(temp2);
     temp1->LeftNodeSet(node);
 
-    if (node->UpNodeGet() == nullptr)
+    if (node->UpNodeGet() != nullptr)
     {
-        this->root= temp1;
+        (node->UpNodeGet()->LeftNodeGet() != node) ? (node->UpNodeGet()->RightNodeSet(temp1)) : (node->UpNodeGet()->LeftNodeSet(temp1));
     }
 
     else
     {
-        (node->UpNodeGet()->LeftNodeGet() != node) ? (node->UpNodeGet()->RightNodeSet(temp1)) : (node->UpNodeGet()->LeftNodeSet(temp1));
+        this->root= temp1;
     }
 
     temp1->UpNodeSet(node->UpNodeGet());
@@ -199,14 +199,14 @@ void RankAVLTeamTree<Key,Value>::RRRotation(TeamNode<Key,Value> *node)
 
     temp1->RightNodeSet(node);
 
-    if (node->UpNodeGet() == nullptr)
+    if (node->UpNodeGet() != nullptr)
     {
-        this->root= temp1;
+        (node->UpNodeGet()->LeftNodeGet() != node) ? (node->UpNodeGet()->RightNodeSet(temp1)) :(node->UpNodeGet()->LeftNodeSet(temp1));
     }
 
     else
     {
-        (node->UpNodeGet()->LeftNodeGet() != node) ? node->UpNodeGet()->RightNodeSet(temp1) :  node->UpNodeGet()->LeftNodeSet(temp1);
+        this->root= temp1;
     }
 
     temp1->UpNodeSet(node->UpNodeGet());
@@ -309,6 +309,8 @@ bool RankAVLTeamTree<Key,Value>::Insert(const Value &data)
 
     } catch (const std::bad_alloc &) { return false; }
 
+    return true;
+
 }
 
 template<class Key,class Value>
@@ -346,9 +348,9 @@ bool RankAVLTeamTree<Key,Value>::Remove(const Value &data)
         replacement = removing_node->LeftNodeGet();
     }
 
-    TeamNode<Key,Value>* parent_of_removing= removing_node->UpNodeGet();
+    //TeamNode<Key,Value>* parent_of_removing= removing_node->UpNodeGet();
 
-    if (parent_of_removing == nullptr)
+    if (removing_node->UpNodeGet() == nullptr)
     {
         // if the removing is the root
         this->root= replacement;
@@ -362,10 +364,10 @@ bool RankAVLTeamTree<Key,Value>::Remove(const Value &data)
 
     if (replacement!= nullptr)
     {
-        replacement->UpNodeSet(parent_of_removing);
+        replacement->UpNodeSet(removing_node->UpNodeGet());
     }
 
-    TeamNode<Key,Value>* temp = parent_of_removing;
+    TeamNode<Key,Value>* temp = removing_node->UpNodeGet();
 
     // fixing the tree
 
@@ -375,7 +377,7 @@ bool RankAVLTeamTree<Key,Value>::Remove(const Value &data)
         temp = temp->UpNodeGet();
     }
 
-    temp = parent_of_removing;
+    temp = removing_node->UpNodeGet();
 
     while (temp!= nullptr && temp->UpNodeGet() != nullptr)
     {
