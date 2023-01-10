@@ -7,44 +7,44 @@
 
 
 template<class Key,class Value>
-class PlayerNode {
+class TeamNode {
 
-    Value player;
-    PlayerNode<Key,Value> *NodeLeft;
-    PlayerNode<Key,Value> *NodeRight;
-    PlayerNode<Key,Value> *UpNode;
+    Value team;
+    TeamNode<Key,Value> *NodeLeft;
+    TeamNode<Key,Value> *NodeRight;
+    TeamNode<Key,Value> *UpNode;
     int height;
-    int NumberOfPlayerInSubTreeIncluded;
+    int NumberOfTeamsUnderThisIncluded;
 
 public:
 
-    PlayerNode() : player(nullptr), NodeLeft(nullptr), NodeRight(nullptr), UpNode(nullptr), height(0), NumberOfPlayerInSubTreeIncluded(0){}
+    TeamNode() : team(nullptr), NodeLeft(nullptr), NodeRight(nullptr), UpNode(nullptr), height(0), NumberOfTeamsUnderThisIncluded(0){}
 
-    explicit PlayerNode(const Value &value) : player(value), NodeLeft(nullptr), NodeRight(nullptr), UpNode(nullptr), height(0), NumberOfPlayerInSubTreeIncluded(1) {}
+    explicit TeamNode(const Value &value) : team(value), NodeLeft(nullptr), NodeRight(nullptr), UpNode(nullptr), height(0), NumberOfTeamsUnderThisIncluded(1) {}
 
-    ~PlayerNode();
+    ~TeamNode();
 
-    const PlayerNode<Key,Value> *GetMinNode() const;
+    const TeamNode<Key,Value> *GetMinNode() const;
 
-    Value DataGet() const { return player; }
+    Value GetTeam() const { return team; }
 
-    void DataSet(const Value &new_data);
+    void SetTeam(const Value &new_data);
 
-    void LeftNodeSet(PlayerNode<Key,Value> *left) { NodeLeft = left; }
+    void LeftNodeSet(TeamNode<Key,Value> *left) { NodeLeft = left; }
 
-    PlayerNode<Key,Value> *LeftNodeGet() const { return NodeLeft; }
+    TeamNode<Key,Value> *LeftNodeGet() const { return NodeLeft; }
 
-    void UpNodeSet(PlayerNode<Key,Value> *Up) { UpNode = Up; }
+    void UpNodeSet(TeamNode<Key,Value> *Up) { UpNode = Up; }
 
-    PlayerNode<Key,Value> *UpNodeGet() const { return UpNode; }
+    TeamNode<Key,Value> *UpNodeGet() const { return UpNode; }
 
     int GetHeight() const { return this->height; }
 
-    int NodeCounterSubTree() {return (this == nullptr) ? 0 : this->NumberOfPlayerInSubTreeIncluded;};
+    int NodeCounterSubTree() {return (this == nullptr) ? 0 : this->NumberOfTeamsUnderThisIncluded;};
 
-    void RightNodeSet(PlayerNode<Key,Value> *right) { NodeRight = right; }
+    void RightNodeSet(TeamNode<Key,Value> *right) { NodeRight = right; }
 
-    PlayerNode<Key,Value> *RightNodeGet() const { return NodeRight; }
+    TeamNode<Key,Value> *RightNodeGet() const { return NodeRight; }
 
     void UpdateHeight();
 
@@ -53,39 +53,39 @@ public:
 };
 
 template<class Key,class Value>
-class RankAVLPlayerTree {
+class RankAVLTeamTree {
 
-    PlayerNode<Key,Value> *root;
+    TeamNode<Key,Value> *root;
 
-    void RLRotation(PlayerNode<Key,Value> *node);
+    void RLRotation(TeamNode<Key,Value> *node);
 
-    void RRRotation(PlayerNode<Key,Value> *node);
+    void RRRotation(TeamNode<Key,Value> *node);
 
-    void HelpForInsert(PlayerNode<Key,Value> *root_to_insert, PlayerNode<Key,Value> *new_node);
+    void HelpForInsert(TeamNode<Key,Value> *root_to_insert, TeamNode<Key,Value> *new_node);
 
-    void RotationNeed(PlayerNode<Key,Value> *node);
+    void RotationNeed(TeamNode<Key,Value> *node);
 
 public:
 
-    explicit RankAVLPlayerTree() : root(nullptr) {}
+    explicit RankAVLTeamTree() : root(nullptr) {}
 
-    ~RankAVLPlayerTree() { delete root;};
+    ~RankAVLTeamTree() { delete root;};
 
-    PlayerNode<Key,Value> *HelpForRemove(PlayerNode<Key,Value> *root_to_remove, const Value& val);
+    TeamNode<Key,Value> *HelpForRemove(TeamNode<Key,Value> *root_to_remove, const Value& val);
 
     bool Insert(const Value &data);
 
     bool Remove(const Value &data);
 
-    PlayerNode<Key,Value>* GetRoot() {return this->root;};
+    TeamNode<Key,Value>* GetRoot() {return this->root;};
 
-    PlayerNode<Key,Value>* findIndex(PlayerNode<Key, Value> *node, int index);
+    TeamNode<Key,Value>* findIndex(TeamNode<Key, Value> *node, int index);
 
-    PlayerNode<Key,Value> *Find(const Value &value) const;
+    TeamNode<Key,Value> *Find(const Value &value) const;
 
-    PlayerNode<Key,Value> *HelperForFind(PlayerNode<Key,Value> *node, const Value &value) const;
+    TeamNode<Key,Value> *HelperForFind(TeamNode<Key,Value> *node, const Value &value) const;
 
-    PlayerNode<Key,Value> *FindMinValInTree(PlayerNode<Key,Value> *node);
+    TeamNode<Key,Value> *FindMinValInTree(TeamNode<Key,Value> *node);
 
 
 
@@ -93,62 +93,62 @@ public:
 
 
 template<class Key,class Value>
-void PlayerNode<Key,Value>::UpdateHeight() {
+void TeamNode<Key,Value>::UpdateHeight() {
     int left = (NodeLeft == nullptr) ? -1 : NodeLeft->GetHeight();
     int right = (NodeRight == nullptr) ? -1 : NodeRight->GetHeight();
-    this->NumberOfPlayerInSubTreeIncluded = 1;
+    this->NumberOfTeamsUnderThisIncluded = 1;
     if (NodeLeft != nullptr)
     {
-        this->NumberOfPlayerInSubTreeIncluded += NodeLeft->NumberOfPlayerInSubTreeIncluded;
+        this->NumberOfTeamsUnderThisIncluded += NodeLeft->NumberOfTeamsUnderThisIncluded;
     }
     if (NodeRight != nullptr)
     {
-        this->NumberOfPlayerInSubTreeIncluded += NodeRight->NumberOfPlayerInSubTreeIncluded;
+        this->NumberOfTeamsUnderThisIncluded += NodeRight->NumberOfTeamsUnderThisIncluded;
     }
     this->height = left > right ? left + 1 : right + 1;
 }
 
 
 template<class Key,class Value>
-int PlayerNode<Key,Value>::GetBalanceFactor() const {
+int TeamNode<Key,Value>::GetBalanceFactor() const {
     int lh = (NodeLeft == nullptr) ? -1 : NodeLeft->GetHeight();
     int rh = (NodeRight == nullptr) ? -1 : NodeRight->GetHeight();
     return lh - rh;
 }
 
 template<class Key,class Value>
-PlayerNode<Key,Value>::~PlayerNode() {
+TeamNode<Key,Value>::~TeamNode() {
     delete NodeLeft;
     delete NodeRight;
 }
 
 template<class Key,class Value>
-void PlayerNode<Key,Value>::DataSet(const Value &new_data) {
-    this->player = new_data;
+void TeamNode<Key,Value>::SetTeam(const Value &new_data) {
+    this->team = new_data;
 }
 
 template<class Key,class Value>
-const PlayerNode<Key,Value> *PlayerNode<Key,Value>::GetMinNode() const {
+const TeamNode<Key,Value> *TeamNode<Key,Value>::GetMinNode() const {
     return (LeftNodeGet() == nullptr) ? this : LeftNodeGet()->GetMinNode();
 }
 
 
 template<class Key,class Value>
-PlayerNode<Key,Value> *RankAVLPlayerTree<Key,Value>::Find(const Value &value) const {
-    PlayerNode<Key,Value> *tmp = this->root;
+TeamNode<Key,Value> *RankAVLTeamTree<Key,Value>::Find(const Value &value) const {
+    TeamNode<Key,Value> *tmp = this->root;
     return HelperForFind(tmp, value);
 }
 
 
 
 template<class Key,class Value>
-void RankAVLPlayerTree<Key,Value>::RLRotation(PlayerNode<Key,Value> *node) {
+void RankAVLTeamTree<Key,Value>::RLRotation(TeamNode<Key,Value> *node) {
     if (node == nullptr) { return; }
 
-    PlayerNode<Key,Value> *helper = node->RightNodeGet();
+    TeamNode<Key,Value> *helper = node->RightNodeGet();
 
 
-    PlayerNode<Key,Value> *helpers_left_node = helper->LeftNodeGet();
+    TeamNode<Key,Value> *helpers_left_node = helper->LeftNodeGet();
     node->RightNodeSet(helpers_left_node);
     helper->LeftNodeSet(node);
 
@@ -177,13 +177,13 @@ void RankAVLPlayerTree<Key,Value>::RLRotation(PlayerNode<Key,Value> *node) {
 }
 
 template<class Key,class Value>
-void RankAVLPlayerTree<Key,Value>::RRRotation(PlayerNode<Key,Value> *node) {
+void RankAVLTeamTree<Key,Value>::RRRotation(TeamNode<Key,Value> *node) {
     if (node == nullptr) { return; }
 
-    PlayerNode<Key,Value> *helper = node->LeftNodeGet();
+    TeamNode<Key,Value> *helper = node->LeftNodeGet();
 
 
-    PlayerNode<Key,Value> *helpers_right_node = helper->RightNodeGet();
+    TeamNode<Key,Value> *helpers_right_node = helper->RightNodeGet();
     node->LeftNodeSet(helpers_right_node);
     if (helpers_right_node != nullptr)
     {
@@ -213,13 +213,13 @@ void RankAVLPlayerTree<Key,Value>::RRRotation(PlayerNode<Key,Value> *node) {
 
 
 template<class Key,class Value>
-bool RankAVLPlayerTree<Key,Value>::Insert(const Value &data) {
+bool RankAVLTeamTree<Key,Value>::Insert(const Value &data) {
 
     if (this->Find(data)) {
         return false;
     }
 
-    auto *new_node = new PlayerNode<Key,Value>(data);
+    auto *new_node = new TeamNode<Key,Value>(data);
 
     if (new_node == nullptr) {
         throw std::bad_alloc();
@@ -240,8 +240,8 @@ bool RankAVLPlayerTree<Key,Value>::Insert(const Value &data) {
 
 
 template<class Key,class Value>
-void RankAVLPlayerTree<Key,Value>::HelpForInsert(PlayerNode<Key,Value> *root_to_insert, PlayerNode<Key,Value> *new_node) {
-    if (Key()(root_to_insert->DataGet(), new_node->DataGet()) == 1) {
+void RankAVLTeamTree<Key,Value>::HelpForInsert(TeamNode<Key,Value> *root_to_insert, TeamNode<Key,Value> *new_node) {
+    if (Key()(root_to_insert->GetTeam(), new_node->GetTeam()) == 1) {
 
         if (root_to_insert->LeftNodeGet() == nullptr) {
             root_to_insert->LeftNodeSet(new_node);
@@ -270,21 +270,21 @@ void RankAVLPlayerTree<Key,Value>::HelpForInsert(PlayerNode<Key,Value> *root_to_
 
 
 template<class Key,class Value>
-PlayerNode<Key,Value> *RankAVLPlayerTree<Key,Value>::FindMinValInTree(PlayerNode<Key,Value> *node) {
+TeamNode<Key,Value> *RankAVLTeamTree<Key,Value>::FindMinValInTree(TeamNode<Key,Value> *node) {
    return (node == nullptr or (node != nullptr and node->LeftNodeGet() == nullptr)) ? node : FindMinValInTree(node->LeftNodeGet());
 }
 
 
 template <class Key,class Value>
-PlayerNode<Key,Value>* RankAVLPlayerTree<Key,Value>::HelpForRemove(PlayerNode<Key,Value>* root_to_remove, const Value& val)
+TeamNode<Key,Value>* RankAVLTeamTree<Key,Value>::HelpForRemove(TeamNode<Key,Value>* root_to_remove, const Value& val)
 {
-    PlayerNode<Key,Value>* removing = Find(val);
-    PlayerNode<Key,Value>* helper_removing_parent_node = nullptr;
+    TeamNode<Key,Value>* removing = Find(val);
+    TeamNode<Key,Value>* helper_removing_parent_node = nullptr;
 
     if (removing->LeftNodeGet() && removing->RightNodeGet()) {
-        PlayerNode<Key,Value>* new_root_needed = FindMinValInTree(removing->RightNodeGet());
+        TeamNode<Key,Value>* new_root_needed = FindMinValInTree(removing->RightNodeGet());
 
-        removing->DataSet(new_root_needed->DataGet());
+        removing->SetTeam(new_root_needed->GetTeam());
         removing = new_root_needed;
         if (removing->RightNodeGet()) {
             helper_removing_parent_node = removing->RightNodeGet();
@@ -300,7 +300,7 @@ PlayerNode<Key,Value>* RankAVLPlayerTree<Key,Value>::HelpForRemove(PlayerNode<Ke
         helper_removing_parent_node = removing->RightNodeGet();
     }
 
-    PlayerNode<Key,Value>* removings_up_node = removing->UpNodeGet();
+    TeamNode<Key,Value>* removings_up_node = removing->UpNodeGet();
     if (removings_up_node == nullptr)
     {
         root = helper_removing_parent_node;
@@ -324,7 +324,7 @@ PlayerNode<Key,Value>* RankAVLPlayerTree<Key,Value>::HelpForRemove(PlayerNode<Ke
 }
 
 template<class Key,class Value>
-void RankAVLPlayerTree<Key,Value>::RotationNeed(PlayerNode<Key,Value> *node) {
+void RankAVLTeamTree<Key,Value>::RotationNeed(TeamNode<Key,Value> *node) {
     int balance_root = node->GetBalanceFactor();
 
     if (balance_root == 2 && (node->LeftNodeGet())->GetBalanceFactor() >= 0) {
@@ -353,17 +353,17 @@ void RankAVLPlayerTree<Key,Value>::RotationNeed(PlayerNode<Key,Value> *node) {
 
 
 template<class Key,class Value>
-bool RankAVLPlayerTree<Key,Value>::Remove(const Value &data) {
+bool RankAVLTeamTree<Key,Value>::Remove(const Value &data) {
     if (root == nullptr)
         return false;
 
-    PlayerNode<Key,Value> *we_remove = this->Find(data);
+    TeamNode<Key,Value> *we_remove = this->Find(data);
     if (we_remove == nullptr)
     {
         return false;
     }
 
-    PlayerNode<Key,Value> *UpDeleted = HelpForRemove(root, data);
+    TeamNode<Key,Value> *UpDeleted = HelpForRemove(root, data);
 
     while (UpDeleted != nullptr) {
         RotationNeed(UpDeleted);
@@ -376,16 +376,16 @@ bool RankAVLPlayerTree<Key,Value>::Remove(const Value &data) {
 
 
 template<class Key,class Value>
-PlayerNode<Key,Value> *RankAVLPlayerTree<Key,Value>::HelperForFind(PlayerNode<Key,Value> *node, const Value &value) const {
+TeamNode<Key,Value> *RankAVLTeamTree<Key,Value>::HelperForFind(TeamNode<Key,Value> *node, const Value &value) const {
     if (node == nullptr) {
         return nullptr;
     }
 
-    if (Key()(node->DataGet(), value) == 0)
+    if (Key()(node->GetTeam(), value) == 0)
     {
         return node;
     }
-    else if (Key()(value, node->DataGet()) == 1)
+    else if (Key()(value, node->GetTeam()) == 1)
     {
         return HelperForFind(node->RightNodeGet(), value);
     }
@@ -400,7 +400,7 @@ PlayerNode<Key,Value> *RankAVLPlayerTree<Key,Value>::HelperForFind(PlayerNode<Ke
 
 
 template<class Key, class Value>
-PlayerNode<Key, Value> *RankAVLPlayerTree<Key, Value>::findIndex(PlayerNode<Key, Value> *node, int index)
+TeamNode<Key, Value> *RankAVLTeamTree<Key, Value>::findIndex(TeamNode<Key, Value> *node, int index)
 {
     if (node == nullptr)
         return 0;
