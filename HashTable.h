@@ -8,13 +8,13 @@
 
 class HashTable{
 
-    private:
+private:
     int array_size;
     int elements_counter;
     LinkedList<std::shared_ptr<Player>>** arr;
     int hashFunction(int i) const;
 
-    public:
+public:
 
     HashTable();
 

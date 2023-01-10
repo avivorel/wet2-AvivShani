@@ -14,12 +14,12 @@ void Team::add_player(const std::shared_ptr<Player>& playerToAdd)
     if (this->numberOfPlayers == 0){
         this->root_player = playerToAdd;
     }
-        this->numberOfPlayers = this->numberOfPlayers + 1;
-        if (playerToAdd->isGoalie)
-        {
-            this->hasGK = true;
-            this->numberOfGK += 1;
-        }
+    this->numberOfPlayers = this->numberOfPlayers + 1;
+    if (playerToAdd->isGoalie)
+    {
+        this->hasGK = true;
+        this->numberOfGK += 1;
+    }
     team_ability += playerToAdd->ability;
 }
 

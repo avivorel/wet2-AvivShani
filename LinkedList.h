@@ -34,8 +34,8 @@ public:
         tail = nullptr;
     }
 
-   ~LinkedList(){
-       deleteList();
+    ~LinkedList(){
+        deleteList();
     }
     void insert(T data)
     {
